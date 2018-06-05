@@ -44,8 +44,8 @@ public class Props {
             } else {
                 if(name.indexOf('.') >= 0)
                     continue;
-                System.err.println("Undefined property: "+name);
-                System.exit(2);
+                //System.err.println("Undefined property: "+name);
+                //System.exit(2);
             }
         }
     }

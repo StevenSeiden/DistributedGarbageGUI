@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Main {
 
-    static Adversary adv = new Adversary();
+    static edu.lsu.cct.distgc.Adversary adv = new Adversary();
 
     /**
      * Create a random graph and then remove the support from root edges
