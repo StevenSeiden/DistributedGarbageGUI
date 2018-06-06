@@ -28,36 +28,36 @@ public class Gui {
             public void paint(Graphics g) {
                 if(mh.m != null) {
 
+                int circleDiameter;
 
                 Dimension d = getSize();
-                int circleDiameter = (d.height)-40;
-                //int circleDiameter = 500;
+                if(d.height>d.width){
+                    circleDiameter = (d.width)-60;
+                }
+                else{
+                    circleDiameter = (d.height)-60;
+                    }
+
                 int n = 0;
 
 
-                g.drawOval(20,20, circleDiameter, circleDiameter);
+                g.drawOval(30,30, circleDiameter, circleDiameter);
 
                 int nodeAmount = Node.nodeMap.size();
                 double angleSeparating = (2*Math.PI/nodeAmount);
-
-
                     g.drawString(mh.m.toString(),0,25);
-                    //my1.draw(g,x,y);
 
-
-                    //Drawing the graphics
-
-                    g.setColor(Color.RED);
-                    g.fillOval((circleDiameter/2),(circleDiameter/2),20,20);
+                    //g.setColor(Color.RED);
+                    //g.fillOval((circleDiameter/2)+10,(circleDiameter/2)+10,20,20);
 
 
 
                     //VirtualNode FirstNode = new VirtualNode();
                     for(Node node : Node.nodeMap.values()) {
-                        int nodeX = (int)((250*(double)java.lang.Math.cos(angleSeparating*n)+(circleDiameter/2))+20);
-                        int nodeY = (int)((250*(double)java.lang.Math.sin(angleSeparating*n)+(circleDiameter/2))+20);
+                        int nodeX = (int)(((circleDiameter/2)*(double)java.lang.Math.cos(angleSeparating*n))+5);
+                        int nodeY = (int)(((circleDiameter/2)*(double)java.lang.Math.sin(angleSeparating*n))+5);
                         g.setColor(Color.BLUE);
-                        g.fillOval(nodeX, nodeY, 10, 10);
+                        g.fillOval(nodeX, nodeY, 50, 50);
 
                         System.out.println("id="+node.id);
                         for(Integer out : node.edges) {
@@ -87,7 +87,7 @@ public class Gui {
                 jf.repaint();
                 
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(250);
                 } catch (InterruptedException ex) {
                 }
                 
