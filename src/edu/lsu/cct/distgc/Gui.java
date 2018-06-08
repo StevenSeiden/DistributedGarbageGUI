@@ -2,8 +2,7 @@ package edu.lsu.cct.distgc;
 
 import java.awt.Container;
 import java.awt.Graphics;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +10,7 @@ import java.math.*;
 import java.awt.Color;
 
 public class Gui {
-    
+
     static class MessageHolder {
         Message m;
     }
@@ -19,54 +18,64 @@ public class Gui {
     public static void main(String[] args) throws Exception {
 
         final JFrame jf = new JFrame("Distributed GC GUI");
+        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Container c = jf.getContentPane();
-        c.setPreferredSize(new Dimension(800,600));
+        c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
         //MyObject my1 = new MyObject();
         c.add(new JComponent() {
             @Override
             public void paint(Graphics g) {
-                if(mh.m != null) {
+                if (mh.m != null) {
 
-                int circleDiameter;
+                    int circleDiameter;
 
-                Dimension d = getSize();
-                if(d.height>d.width){
-                    circleDiameter = (d.width)-60;
-                }
-                else{
-                    circleDiameter = (d.height)-60;
+                    Dimension d = getSize();
+                    if (d.height > d.width) {
+                        circleDiameter = (d.width) - 60;
+                    } else {
+                        circleDiameter = (d.height) - 60;
                     }
 
-                int n = 0;
+                    int n = 0;
 
 
-                g.drawOval(30,30, circleDiameter, circleDiameter);
-
-                int nodeAmount = Node.nodeMap.size();
-                double angleSeparating = (2*Math.PI/nodeAmount);
-                    g.drawString(mh.m.toString(),0,25);
+                    g.drawOval(30, 30, circleDiameter, circleDiameter);
+                    int nodeAmount = Node.nodeMap.size();
+                    double angleSeparating = (2 * Math.PI / nodeAmount);
+                    g.drawString(mh.m.toString(), 0, 25);
 
                     //g.setColor(Color.RED);
                     //g.fillOval((circleDiameter/2)+10,(circleDiameter/2)+10,20,20);
 
+                    try {
+                        for (Node node : Node.nodeMap.values()) {
+                            int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
+                            int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
+                            g.setColor(Color.BLUE);
+                            g.fillOval(nodeX, nodeY, 50, 50);
+                            g.setColor(Color.RED);
+                            g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
+                            for (Integer out : node.edges) {
+                                if (out != null) {
+                                    Node child = Node.nodeMap.get(out);
+                                    System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
+                                    int startNode = node.id - 1;
+                                    int endNode = child.id - 1;
+                                    System.out.printf("You are going from %d to %d", startNode, endNode);
+                                    int fromNodeX = (int) ((((circleDiameter / 2) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                                    int fromNodeY = (int) ((((circleDiameter / 2) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                                    int toNodeX = (int) ((((circleDiameter / 2.3) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                                    int toNodeY = (int) ((((circleDiameter / 2.3) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
 
+                                    nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
 
-                    //VirtualNode FirstNode = new VirtualNode();
-                    for(Node node : Node.nodeMap.values()) {
-                        int nodeX = (int)(((circleDiameter/2)*(double)java.lang.Math.cos(angleSeparating*n))+5);
-                        int nodeY = (int)(((circleDiameter/2)*(double)java.lang.Math.sin(angleSeparating*n))+5);
-                        g.setColor(Color.BLUE);
-                        g.fillOval(nodeX, nodeY, 50, 50);
-
-                        System.out.println("id="+node.id);
-                        for(Integer out : node.edges) {
-                            if(out != null) {
-                                Node child = Node.nodeMap.get(out);
-                                System.out.printf("There's an edge from %d to %d%n",node.id,child.id);
-                                n++;
+                                    n++;
+                                }
                             }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -74,9 +83,10 @@ public class Gui {
         });
         jf.pack();
         jf.setVisible(true);
-        
+
         Message.addListener(new MessageListener() {
             boolean ready = true;
+
             @Override
             public void before(Message m) {
             }
@@ -85,12 +95,12 @@ public class Gui {
             public void after(Message m) {
                 mh.m = m;
                 jf.repaint();
-                
+
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException ex) {
                 }
-                
+
                 ready = true;
             }
 
@@ -101,18 +111,69 @@ public class Gui {
                 return r;
             }
         });
-        
+
         System.setProperty("CONGEST_mode", "yes");
-        System.setProperty("test","cycle");
+        System.setProperty("test", "cycle");
         System.setProperty("size", "4");
-        System.setProperty("verbose","yes");
-        
+        System.setProperty("verbose", "yes");
+
         Main.main(new String[0]);
     }
-    /*public void virtualNode extends paint(int xPos, int yPos){
-        paint(Graphics g) {
-            g.Graphics.setColor(Color.BLUE);
-            g.Graphics.fillOval(xPos, yPos, 10, 10);
-        }
-    }*/
+
+    static class Rotate {
+        int x1, y1, x2, y2;
+    }
+
+    static void rotate(Rotate r, double theta) {
+        double d = Math.sqrt(((r.x2 - r.x1) * (r.x2 - r.x1)) + ((r.y2 - r.y1) * (r.y2 - r.y1)));
+        double alpha = Math.atan2(r.y2 - r.y1, r.x2 - r.x1);
+        double beta = alpha + theta;
+        double xn = d * Math.cos(beta) + r.x1;
+        double yn = d * Math.sin(beta) + r.y1;
+        r.x2 = (int) xn;
+        r.y2 = (int) yn;
+    }
+
+    public static void nodeArrow(int x1, int y1, int x2, int y2, Graphics g) {
+        double theta = Math.atan2(y2 - y1, x2 - x1);
+        double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
+        double L = 10;
+        double h = 5;
+
+        Rotate r2 = new Rotate();
+        r2.x1 = x1;
+        r2.y1 = y1;
+        r2.x2 = (int) (d + x1);
+        r2.y2 = y1;
+        rotate(r2, theta);
+
+        Rotate r3 = new Rotate();
+        r3.x1 = x1;
+        r3.y1 = y1;
+        r3.x2 = (int) (d -L + x1);
+        r3.y2 = (int) (y1 - L);
+        rotate(r3, theta);
+
+        Rotate r4 = new Rotate();
+        r4.x1 = x1;
+        r4.y1 = y1;
+        r4.x2 = (int) (d -L+x1);
+        r4.y2 = (int) (y1 + 10);
+        rotate(r4, theta);
+
+        /*int x3 = x1 - 10;
+        int y3 = y1 - 10;
+        double theta = Math.atan2(y2-y1,x2-x1);
+
+        double x2_2 = r12*Math.cos(theta);
+        double x2_3 = x2_2+x1;*/
+
+
+        //double x3_2 = r13*Math.cos(theta);
+
+
+        g.drawLine(x1, y1, r2.x2, r2.y2);
+        //g.fillPolygon(new int[] {x2, x2-10, x2-10}, new int[] {y2, y2-10, y2+10}, 3);
+        g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
+    }
 }
