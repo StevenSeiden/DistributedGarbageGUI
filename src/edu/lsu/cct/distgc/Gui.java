@@ -1,14 +1,12 @@
 package edu.lsu.cct.distgc;
 
-import java.awt.Container;
-import java.awt.Graphics;
+import java.awt.*;
 import javax.swing.*;
-import java.awt.Dimension;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.math.*;
-import java.awt.Color;
 
 public class Gui {
 
@@ -20,11 +18,11 @@ public class Gui {
     static Color nodeColor[]={Color.red,Color.cyan,Color.green,Color.orange,Color.pink,Color.yellow,Color.magenta,//7 colors
             (new Color(125, 0, 214)),
             (new Color(12, 143, 0)),
-            (new Color(214, 79, 0),
-            (new Color(12, 158, 129),
-            (new Color(142, 31, 31),
-            (new Color(157, 144, 12),
-            (new Color(154, 60, 109),
+            (new Color(214, 79, 0)),
+            (new Color(12, 158, 129)),
+            (new Color(142, 31, 31)),
+            (new Color(157, 144, 12)),
+            (new Color(154, 60, 109)),
             (new Color(86, 127, 189)),
             (new Color(189, 151, 86)),
             (new Color(255, 148, 150)),
@@ -37,6 +35,10 @@ public class Gui {
 
     HashMap<String, Color> cidColor = new HashMap<String, Color>();
 
+    static void paintMe(Dimension d,Graphics g) {
+
+    }
+
     public static void main(String[] args) throws Exception {
 
         final JFrame jf = new JFrame("Distributed GC GUI");
@@ -48,10 +50,14 @@ public class Gui {
         c.add(new JComponent() {
             @Override
             public void paint(Graphics g) {
+                Dimension d = getSize();
+                Image bi = createImage(d.width,d.height);
+                paintMe(d,g);
+                g.drawImage(bi,0,0,null);
                 if (mh.m != null) {
 
 
-                    Dimension d = getSize();
+                    //Dimension d = getSize();
                     int circleDiameter;
                     if (d.height > d.width) {
                         circleDiameter = (d.width) - 60;
@@ -71,7 +77,7 @@ public class Gui {
                         for (Node node : Node.nodeMap.values()) {
                             int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
                             int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
-                            g.setColor(Color.BLUE);
+                            g.setColor(nodeColor[3]);
                             g.fillOval(nodeX, nodeY, 50, 50);
                             g.setColor(Color.RED);
                             g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
