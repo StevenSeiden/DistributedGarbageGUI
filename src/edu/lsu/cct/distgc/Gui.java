@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.math.*;
+import java.util.Arrays;
 
 public class Gui {
 
@@ -15,102 +16,117 @@ public class Gui {
     }
 
 
-    static Color nodeColor[]={Color.red,Color.cyan,Color.green,Color.orange,Color.pink,Color.yellow,Color.magenta,//7 colors
+    static Color nodeColor[] = {Color.red, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
             (new Color(125, 0, 214)),
             (new Color(12, 143, 0)),
-            (new Color(214, 79, 0)),
+            (new Color(255, 116, 56)),
             (new Color(12, 158, 129)),
             (new Color(142, 31, 31)),
             (new Color(157, 144, 12)),
             (new Color(154, 60, 109)),
             (new Color(86, 127, 189)),
             (new Color(189, 151, 86)),
-            (new Color(255, 148, 150)),
+            (new Color(223, 165, 181)),
             (new Color(250, 255, 148)),
             (new Color(122, 122, 122)),
-            (new Color(207, 207, 207))
+            (new Color(207, 207, 207)),
+            (new Color(121, 169, 130))
     };
 
 
+    static HashMap<String, Integer> cidColor = new HashMap<String, Integer>();
 
-    HashMap<String, Color> cidColor = new HashMap<String, Color>();
+    static void paintMe(Dimension d, Graphics g, MessageHolder mh, Image bi) {
+        g.drawImage(bi, 0, 0, null);
+        if (mh.m != null) {
 
-    static void paintMe(Dimension d,Graphics g) {
+            int circleDiameter;
+            if (d.height > d.width) {
+                circleDiameter = (d.width) - 60;
+            } else {
+                circleDiameter = (d.height) - 60;
+            }
 
+            int n = 0;
+
+
+            g.drawOval(30, 30, circleDiameter, circleDiameter);
+            int nodeAmount = Node.nodeMap.size();
+            double angleSeparating = (2 * Math.PI / nodeAmount);
+            g.drawString(mh.m.toString(), 0, 25);
+
+            int currentColor = 20;
+
+            try {
+                for (Node node : Node.nodeMap.values()) {
+                    int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
+                    int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
+                    //g.setColor(nodeColor[cidColor.get(key)]);
+
+                    for (Integer out : node.edges) {
+                        if (out != null) {
+                            Node child = Node.nodeMap.get(out);
+
+
+                            String key = "blank";
+                            if (child.cd != null && child.cd.getCid() != null) {
+                                key = child.cd.getCid().toString();
+                            }
+
+
+                            if (currentColor == 20) {
+                                currentColor = 0;
+                            }
+
+
+                            if (!Arrays.asList(nodeColor).contains(key)) {
+                                cidColor.put(key, currentColor);
+                                currentColor++;
+                            }
+                            //System.out.println("cid="+key);
+                            System.out.println("Current color:");
+                            System.out.println(nodeColor[currentColor]);
+
+                            g.setColor(nodeColor[currentColor]);
+                            g.fillOval(nodeX, nodeY, 50, 50);
+                            g.setColor(Color.red);
+                            g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
+
+
+                            System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
+                            int startNode = node.id - 1;
+                            int endNode = child.id - 1;
+                            System.out.printf("You are going from %d to %d", startNode, endNode);
+
+                            int fromNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                            int fromNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                            int toNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                            int toNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+
+                            nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
+                            n++;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) throws Exception {
-
         final JFrame jf = new JFrame("Distributed GC GUI");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
-        //MyObject my1 = new MyObject();
         c.add(new JComponent() {
             @Override
             public void paint(Graphics g) {
                 Dimension d = getSize();
-                Image bi = createImage(d.width,d.height);
-                paintMe(d,g);
-                g.drawImage(bi,0,0,null);
-                if (mh.m != null) {
+                Image bi = createImage(d.width, d.height);
+                paintMe(d, g, mh, bi);
 
-
-                    //Dimension d = getSize();
-                    int circleDiameter;
-                    if (d.height > d.width) {
-                        circleDiameter = (d.width) - 60;
-                    } else {
-                        circleDiameter = (d.height) - 60;
-                    }
-
-                    int n = 0;
-
-
-                    g.drawOval(30, 30, circleDiameter, circleDiameter);
-                    int nodeAmount = Node.nodeMap.size();
-                    double angleSeparating = (2 * Math.PI / nodeAmount);
-                    g.drawString(mh.m.toString(), 0, 25);
-
-                    try {
-                        for (Node node : Node.nodeMap.values()) {
-                            int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
-                            int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
-                            g.setColor(nodeColor[3]);
-                            g.fillOval(nodeX, nodeY, 50, 50);
-                            g.setColor(Color.RED);
-                            g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
-                            for (Integer out : node.edges) {
-                                if (out != null) {
-                                    Node child = Node.nodeMap.get(out);
-
-
-                                    String key = "blank";
-                                    if(child.cd != null && child.cd.getCid() != null)
-                                        key = child.cd.getCid().toString();
-                                    System.out.println("cid="+key);
-
-
-                                    System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
-                                    int startNode = node.id - 1;
-                                    int endNode = child.id - 1;
-                                    System.out.printf("You are going from %d to %d", startNode, endNode);
-
-                                    int fromNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                                    int fromNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                                    int toNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-                                    int toNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-
-                                    nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
-                                    n++;
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
             }
 
         });
@@ -178,15 +194,15 @@ public class Gui {
         Rotate r1 = new Rotate();
         r1.x1 = x1;
         r1.y1 = y1;
-        r1.x2 = (int)(x1+Radius);
-        r1.y2 = (int)(y1 + offset);
+        r1.x2 = (int) (x1 + Radius);
+        r1.y2 = (int) (y1 + offset);
         rotate(r1, theta);
 
         Rotate r2 = new Rotate();
         r2.x1 = x1;//(int)(x1+Radius);
         r2.y1 = y1;//(int)(y1 + offset);
         r2.x2 = (int) (d + x1 - Radius);
-        r2.y2 = (int)(y1 + offset);
+        r2.y2 = (int) (y1 + offset);
         rotate(r2, theta);
 
         Rotate r3 = new Rotate();

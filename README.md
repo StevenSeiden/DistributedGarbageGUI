@@ -1,4 +1,6 @@
-# Distributed Garbage Collector Simulator
+# Distributed Garbage Collector Simulator GUI
+
+**I am working to add a GUI to Dr. Steven Brandt's Distruibted Garbage Collector Simulator.  His read-me is as follows:**
 
 Overview of codes and programs:
 * src - Contains a full implemenation of the SWPR algorithm described in ISMM 2018.
