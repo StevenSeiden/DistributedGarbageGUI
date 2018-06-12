@@ -63,7 +63,7 @@ public class Gui {
         int n = 0;
 
         try {
-            for (Node node : Node.nodeMap.values()) {
+            for (Node node : Collections.unmodifiableCollection(Node.nodeMap.values())) {
                 int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
                 int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
                 n++;
@@ -88,10 +88,10 @@ public class Gui {
                     currentColor++;
                 }
                 int color = cidColor.get(key);
-                g.setColor(Color.black);
-                g.drawOval(nodeX, nodeY, 50, 50);
                 g.setColor(nodeColor[color]);
                 g.fillOval(nodeX, nodeY, 50, 50);
+                g.setColor(Color.black);
+                g.drawOval(nodeX, nodeY, 50, 50);
 
                 g.setColor(Color.red);
                 g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
