@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Collections;
 import java.math.*;
 import java.util.Arrays;
 
@@ -16,7 +17,7 @@ public class Gui {
     }
 
 
-    static Color nodeColor[] = {Color.red, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
+    static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
             (new Color(125, 0, 214)),
             (new Color(12, 143, 0)),
             (new Color(255, 116, 56)),
@@ -36,81 +37,90 @@ public class Gui {
 
     static HashMap<String, Integer> cidColor = new HashMap<String, Integer>();
 
-    static void paintMe(Dimension d, Graphics g, MessageHolder mh, Image bi) {
-        g.drawImage(bi, 0, 0, null);
+    static int currentColor = 2;
+    static {
+        cidColor.put("blank",0);
+        cidColor.put("dead",1);
+    }
+
+    static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
+
+        int circleDiameter;
+        if (d.height > d.width) {
+            circleDiameter = (d.width) - 60;
+        } else {
+            circleDiameter = (d.height) - 60;
+        }
+
+
+        // The big circle
+        g.drawOval(30, 30, circleDiameter, circleDiameter);
+        int nodeAmount = Node.nodeMap.size();
+        double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
-
-            int circleDiameter;
-            if (d.height > d.width) {
-                circleDiameter = (d.width) - 60;
-            } else {
-                circleDiameter = (d.height) - 60;
-            }
-
-            int n = 0;
-
-
-            g.drawOval(30, 30, circleDiameter, circleDiameter);
-            int nodeAmount = Node.nodeMap.size();
-            double angleSeparating = (2 * Math.PI / nodeAmount);
             g.drawString(mh.m.toString(), 0, 25);
+        }
+        int n = 0;
 
-            int currentColor = 20;
+        try {
+            for (Node node : Node.nodeMap.values()) {
+                int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
+                int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
+                n++;
+                //g.setColor(nodeColor[cidColor.get(key)]);
 
-            try {
-                for (Node node : Node.nodeMap.values()) {
-                    int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
-                    int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
-                    //g.setColor(nodeColor[cidColor.get(key)]);
+                String key = "blank";
+                if (node.cd != null && node.cd.getCid() != null) {
+                    key = node.cd.getCid().toString();
+                }
+                /*
+                if(node.cd != null && node.cd.state == CollectorState.infected_state) {
+                    key = "dead";
+                }
+                */
+                if(node.cd != null && node.cd.state == CollectorState.dead_state) {
+                    key = "dead";
+                }
 
-                    for (Integer out : node.edges) {
-                        if (out != null) {
-                            Node child = Node.nodeMap.get(out);
+                if (!cidColor.containsKey(key)) {
+                    cidColor.put(key, currentColor);
+                    System.out.println("COLOR: "+key+" => "+currentColor);
+                    currentColor++;
+                }
+                int color = cidColor.get(key);
+                g.setColor(Color.black);
+                g.drawOval(nodeX, nodeY, 50, 50);
+                g.setColor(nodeColor[color]);
+                g.fillOval(nodeX, nodeY, 50, 50);
+
+                g.setColor(Color.red);
+                g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
+
+                for (Integer out : Collections.unmodifiableList(node.edges)) {
+                    if (out != null) {
+                        Node child = Node.nodeMap.get(out);
+
+                        //System.out.println("cid="+key);
+                        //System.out.println(nodeColor[currentColor]);
 
 
-                            String key = "blank";
-                            if (child.cd != null && child.cd.getCid() != null) {
-                                key = child.cd.getCid().toString();
-                            }
+                        //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
+                        int startNode = node.id - 1;
+                        int endNode = child.id - 1;
+                        //System.out.printf("You are going from %d to %d", startNode, endNode);
 
+                        int fromNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                        int fromNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                        int toNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                        int toNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
 
-                            if (currentColor == 20) {
-                                currentColor = 0;
-                            }
-
-
-                            if (!Arrays.asList(nodeColor).contains(key)) {
-                                cidColor.put(key, currentColor);
-                                currentColor++;
-                            }
-                            //System.out.println("cid="+key);
-                            System.out.println("Current color:");
-                            System.out.println(nodeColor[currentColor]);
-
-                            g.setColor(nodeColor[currentColor]);
-                            g.fillOval(nodeX, nodeY, 50, 50);
-                            g.setColor(Color.red);
-                            g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
-
-
-                            System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
-                            int startNode = node.id - 1;
-                            int endNode = child.id - 1;
-                            System.out.printf("You are going from %d to %d", startNode, endNode);
-
-                            int fromNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                            int fromNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                            int toNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-                            int toNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-
-                            nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
-                            n++;
-                        }
+                        nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(2);
         }
     }
 
@@ -125,7 +135,8 @@ public class Gui {
             public void paint(Graphics g) {
                 Dimension d = getSize();
                 Image bi = createImage(d.width, d.height);
-                paintMe(d, g, mh, bi);
+                paintMe(d, bi.getGraphics(), mh);
+                g.drawImage(bi, 0, 0, null);
 
             }
 
