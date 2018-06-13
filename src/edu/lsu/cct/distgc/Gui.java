@@ -47,14 +47,14 @@ public class Gui {
 
         int circleDiameter;
         if (d.height > d.width) {
-            circleDiameter = (d.width) - 60;
+            circleDiameter = (d.width) - 100;
         } else {
-            circleDiameter = (d.height) - 60;
+            circleDiameter = (d.height) - 100;
         }
 
 
         // The big circle
-        g.drawOval(30, 30, circleDiameter, circleDiameter);
+        g.drawOval(50, 50, circleDiameter, circleDiameter);
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
@@ -64,8 +64,8 @@ public class Gui {
 
         try {
             for (Node node : Node.nodeMap.values()) {
-                int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) - 20) + circleDiameter / 2;
-                int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) - 20) + circleDiameter / 2;
+                int nodeX = (int) ((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + circleDiameter / 2;
+                int nodeY = (int) ((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + circleDiameter / 2;
                 int nodeDiameter = 100;
                 n++;
                 //g.setColor(nodeColor[cidColor.get(key)]);
@@ -96,7 +96,7 @@ public class Gui {
 
 
                 if(rootNode){
-                    g.fillOval((nodeX-5), (nodeY-5), nodeDiameter+10, nodeDiameter+10);
+                    g.fillOval((nodeX-4), (nodeY-4), nodeDiameter+8, nodeDiameter+8);
                 }
 
                 int color = cidColor.get(key);
@@ -142,10 +142,10 @@ public class Gui {
                         int endNode = child.id - 1;
                         //System.out.printf("You are going from %d to %d", startNode, endNode);
 
-                        int fromNodeX = (int) (((((circleDiameter / 2)-40) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                        int fromNodeY = (int) (((((circleDiameter / 2)-40) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                        int toNodeX = (int) (((((circleDiameter / 2)-40) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-                        int toNodeY = (int) (((((circleDiameter / 2)-40) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                        int fromNodeX = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * startNode)) + 50) + circleDiameter / 2);
+                        int fromNodeY = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * startNode)) + 50) + circleDiameter / 2);
+                        int toNodeX = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * endNode)) + 50) + circleDiameter / 2);
+                        int toNodeY = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * endNode)) + 50) + circleDiameter / 2);
 
                         nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
                     }
