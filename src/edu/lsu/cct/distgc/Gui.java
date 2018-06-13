@@ -84,9 +84,21 @@ public class Gui {
                     currentColor++;
                 }
                 g.setColor(Color.black);
-                if(node.id == 1){
+
+                boolean rootNode = false;
+
+                for(Root r : Root.roots) {
+                    Node nn = r.get();
+                    if(nn != null && r.getId() == node.id){
+                        rootNode = true;
+                    }
+                }
+
+
+                if(rootNode){
                     g.fillOval((nodeX-5), (nodeY-5), nodeDiameter+10, nodeDiameter+10);
                 }
+
                 int color = cidColor.get(key);
                 g.setColor(nodeColor[color]);
                 g.fillOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
