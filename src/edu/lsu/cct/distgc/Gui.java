@@ -99,7 +99,9 @@ public class Gui {
                 g.drawOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
                 g.setFont(new Font("default", Font.BOLD, 14));
                 g.drawString("id=" + node.id, nodeX + 30, nodeY + 20);
-                g.drawString("State:" + node.cd.state, nodeX + 10, nodeY + 32);
+                if(node.cd != null) {
+                    g.drawString("" + node.cd.state, nodeX + 10, nodeY + 32);
+                }
                 //g.drawString("Placeholder", nodeX + 10, nodeY + 32);
                 /*int pc = 0;
                 if (node.cd != null) {
