@@ -18,17 +18,17 @@ public class Gui {
 
 
     static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
-            (new Color(125, 0, 214)),
+            (new Color(193, 135, 227)),
             (new Color(12, 143, 0)),
             (new Color(255, 116, 56)),
             (new Color(12, 158, 129)),
-            (new Color(142, 31, 31)),
-            (new Color(157, 144, 12)),
             (new Color(154, 60, 109)),
+            (new Color(157, 144, 12)),
             (new Color(86, 127, 189)),
             (new Color(189, 151, 86)),
             (new Color(223, 165, 181)),
             (new Color(250, 255, 148)),
+            (new Color(142, 31, 31)),
             (new Color(122, 122, 122)),
             (new Color(207, 207, 207)),
             (new Color(121, 169, 130))
@@ -74,11 +74,6 @@ public class Gui {
                 if (node.cd != null && node.cd.getCid() != null) {
                     key = node.cd.getCid().toString();
                 }
-                /*
-                if(node.cd != null && node.cd.state == CollectorState.infected_state) {
-                    key = "dead";
-                }
-                */
                 if(node.cd != null && node.cd.state == CollectorState.dead_state) {
                     key = "dead";
                 }
@@ -97,17 +92,31 @@ public class Gui {
                 g.fillOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
                 g.setColor(Color.black);
                 g.drawOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
-                g.setFont(new Font("default", Font.BOLD, 14));
-                g.drawString("id=" + node.id, nodeX + 30, nodeY + 20);
-                if(node.cd != null) {
-                    g.drawString("" + node.cd.state, nodeX + 10, nodeY + 32);
-                }
-                //g.drawString("Placeholder", nodeX + 10, nodeY + 32);
-                /*int pc = 0;
+
+                int pc = 0;
+                int rcc = 0;
+                int wc = 0;
                 if (node.cd != null) {
                     pc = node.cd.phantom_count;
+                    rcc = node.cd.rcc;
+                    wc = node.cd.wait_count;
                 }
-                g.drawString("[" + node.strong_count + ", " + node.weak_count + ", " + pc + ", " +  "]", nodeX + 5, nodeY + 44);*/
+
+                g.setFont(new Font("default", Font.BOLD, 16));
+
+                g.drawString("id=" + node.id, nodeX + 27, nodeY + 30);
+
+                g.setFont(new Font("default", Font.BOLD, 12));
+
+                if(node.cd != null) {
+                    g.drawString(node.cd.getCid().toString() + " " + node.cd.state, nodeX + 2, nodeY + 55);
+                }
+                g.setFont(new Font("default", Font.BOLD, 14));
+                //g.drawString("Placeholder", nodeX + 10, nodeY + 32);
+                g.drawString("[" + node.strong_count + ", " + node.weak_count + ", " + pc + ", " + rcc + "]", nodeX + 15, nodeY + 75);
+                g.drawString("(" + node.weight + "/" + node.max_weight + ") " + wc, nodeX + 23, nodeY + 90);
+
+
                 for (Integer out : Collections.unmodifiableList(node.edges)) {
                     if (out != null) {
                         Node child = Node.nodeMap.get(out);
