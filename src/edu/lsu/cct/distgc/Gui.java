@@ -43,14 +43,18 @@ public class Gui {
         cidColor.put("dead",1);
     }
 
+
+
+    static int circleDiameter = 500;
+
     static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
 
-        int circleDiameter;
+        /*int circleDiameter;
         if (d.height > d.width) {
             circleDiameter = (d.width) - 100;
         } else {
             circleDiameter = (d.height) - 100;
-        }
+        }*/
 
 
         // The big circle
@@ -103,6 +107,7 @@ public class Gui {
                 g.setColor(nodeColor[color]);
                 g.fillOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
                 g.setColor(Color.black);
+
                 g.drawOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
 
                 int pc = 0;
@@ -142,12 +147,8 @@ public class Gui {
                         int endNode = child.id - 1;
                         //System.out.printf("You are going from %d to %d", startNode, endNode);
 
-                        int fromNodeX = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * startNode)) + 50) + circleDiameter / 2);
-                        int fromNodeY = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * startNode)) + 50) + circleDiameter / 2);
-                        int toNodeX = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * endNode)) + 50) + circleDiameter / 2);
-                        int toNodeY = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * endNode)) + 50) + circleDiameter / 2);
 
-                        nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
+                        nodeArrow(angleSeparating, startNode, endNode, g);
                     }
                 }
             }
@@ -227,13 +228,26 @@ public class Gui {
         r.y2 = (int) yn;
     }
 
-    public static void nodeArrow(int x1, int y1, int x2, int y2, Graphics g) {
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, Graphics g){
+        int x1 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * startNode)) + 50) + circleDiameter / 2);
+        int y1 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * startNode)) + 50) + circleDiameter / 2);
+        int x2 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * endNode)) + 50) + circleDiameter / 2);
+        int y2 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * endNode)) + 50) + circleDiameter / 2);
+
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
         double L = 10;
         double h = 5;
         double Radius = 30;
         double offset = 5;
+
+
+        /*if(==node.id){
+            g.setColor(Color.red);
+        } else{
+            g.setColor(Color.black);
+        }*/
+
 
         Rotate r1 = new Rotate();
         r1.x1 = x1;
@@ -243,41 +257,26 @@ public class Gui {
         rotate(r1, theta);
 
         Rotate r2 = new Rotate();
-        r2.x1 = x1;//(int)(x1+Radius);
-        r2.y1 = y1;//(int)(y1 + offset);
+        r2.x1 = x1;
+        r2.y1 = y1;
         r2.x2 = (int) (d + x1 - Radius);
         r2.y2 = (int) (y1 + offset);
         rotate(r2, theta);
 
         Rotate r3 = new Rotate();
-        r3.x1 = x1;//(int)(x1+Radius);
-        r3.y1 = y1;//(int)(y1+offset);
-        //r3.x2 = (int) (d - L + x1);
-        //r3.y2 = (int) (y1 - L);
+        r3.x1 = x1;
+        r3.y1 = y1;
         r3.x2 = (int) (d - L + x1 - Radius);
         r3.y2 = (int) (y1 - L + offset);
         rotate(r3, theta);
 
         Rotate r4 = new Rotate();
-        r4.x1 = x1;//(int)(x1+Radius);
-        r4.y1 = y1;//(int)(y1 + offset);
+        r4.x1 = x1;
+        r4.y1 = y1;
         r4.x2 = (int) (d - L + x1 - Radius);
         r4.y2 = (int) (y1 + 10 + offset);
         rotate(r4, theta);
-
-        /*int x3 = x1 - 10;
-        int y3 = y1 - 10;
-        double theta = Math.atan2(y2-y1,x2-x1);
-
-        double x2_2 = r12*Math.cos(theta);
-        double x2_3 = x2_2+x1;*/
-
-
-        //double x3_2 = r13*Math.cos(theta);
-
-
         g.drawLine(r1.x2, r1.y2, r2.x2, r2.y2);
-        //g.fillPolygon(new int[] {x2, x2-10, x2-10}, new int[] {y2, y2-10, y2+10}, 3);
         g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
     }
 }
