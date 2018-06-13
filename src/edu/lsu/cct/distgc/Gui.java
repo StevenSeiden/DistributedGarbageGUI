@@ -143,12 +143,9 @@ public class Gui {
 
 
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
-                        int startNode = node.id - 1;
-                        int endNode = child.id - 1;
-                        //System.out.printf("You are going from %d to %d", startNode, endNode);
-
-
-                        nodeArrow(angleSeparating, startNode, endNode, g);
+                        int startNode = node.id;
+                        int endNode = child.id;
+                        nodeArrow(angleSeparating, startNode, endNode, g, mh);
                     }
                 }
             }
@@ -228,11 +225,18 @@ public class Gui {
         r.y2 = (int) yn;
     }
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, Graphics g){
-        int x1 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * startNode)) + 50) + circleDiameter / 2);
-        int y1 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * startNode)) + 50) + circleDiameter / 2);
-        int x2 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * endNode)) + 50) + circleDiameter / 2);
-        int y2 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * endNode)) + 50) + circleDiameter / 2);
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, Graphics g, MessageHolder mh){
+        int x1 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int y1 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int x2 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int y2 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+
+
+        if((mh.m.sender == startNode) && (mh.m.recipient == endNode)){
+            g.setColor(Color.red);
+        }else{
+            g.setColor(Color.black);
+        }
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
@@ -240,13 +244,6 @@ public class Gui {
         double h = 5;
         double Radius = 30;
         double offset = 5;
-
-
-        /*if(==node.id){
-            g.setColor(Color.red);
-        } else{
-            g.setColor(Color.black);
-        }*/
 
 
         Rotate r1 = new Rotate();
