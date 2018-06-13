@@ -63,7 +63,7 @@ public class Gui {
         int n = 0;
 
         try {
-            for (Node node : Collections.unmodifiableCollection(Node.nodeMap.values())) {
+            for (Node node : Node.nodeMap.values()) {
                 int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) - 20) + circleDiameter / 2;
                 int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) - 20) + circleDiameter / 2;
                 int nodeDiameter = 100;
@@ -117,7 +117,7 @@ public class Gui {
                 g.drawString("(" + node.weight + "/" + node.max_weight + ") " + wc, nodeX + 23, nodeY + 90);
 
 
-                for (Integer out : Collections.unmodifiableList(node.edges)) {
+                for (Integer out : node.edges) {
                     if (out != null) {
                         Node child = Node.nodeMap.get(out);
 
@@ -175,12 +175,12 @@ public class Gui {
             @Override
             public void after(Message m) {
                 mh.m = m;
-                jf.repaint();
 
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException ex) {
                 }
+                jf.repaint();
 
                 ready = true;
             }
