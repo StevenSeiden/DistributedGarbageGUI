@@ -64,8 +64,9 @@ public class Gui {
 
         try {
             for (Node node : Collections.unmodifiableCollection(Node.nodeMap.values())) {
-                int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + 5) + circleDiameter / 2;
-                int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + 5) + circleDiameter / 2;
+                int nodeX = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) - 20) + circleDiameter / 2;
+                int nodeY = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) - 20) + circleDiameter / 2;
+                int nodeDiameter = 100;
                 n++;
                 //g.setColor(nodeColor[cidColor.get(key)]);
 
@@ -87,15 +88,24 @@ public class Gui {
                     System.out.println("COLOR: "+key+" => "+currentColor);
                     currentColor++;
                 }
+                g.setColor(Color.black);
+                if(node.id == 1){
+                    g.fillOval((nodeX-5), (nodeY-5), nodeDiameter+10, nodeDiameter+10);
+                }
                 int color = cidColor.get(key);
                 g.setColor(nodeColor[color]);
-                g.fillOval(nodeX, nodeY, 50, 50);
+                g.fillOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
                 g.setColor(Color.black);
-                g.drawOval(nodeX, nodeY, 50, 50);
-
-                g.setColor(Color.red);
-                g.drawString("id=" + node.id, nodeX + 10, nodeY + 30);
-
+                g.drawOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
+                g.setFont(new Font("default", Font.BOLD, 14));
+                g.drawString("id=" + node.id, nodeX + 30, nodeY + 20);
+                g.drawString("State:" + node.cd.state, nodeX + 10, nodeY + 32);
+                //g.drawString("Placeholder", nodeX + 10, nodeY + 32);
+                /*int pc = 0;
+                if (node.cd != null) {
+                    pc = node.cd.phantom_count;
+                }
+                g.drawString("[" + node.strong_count + ", " + node.weak_count + ", " + pc + ", " +  "]", nodeX + 5, nodeY + 44);*/
                 for (Integer out : Collections.unmodifiableList(node.edges)) {
                     if (out != null) {
                         Node child = Node.nodeMap.get(out);
@@ -109,10 +119,10 @@ public class Gui {
                         int endNode = child.id - 1;
                         //System.out.printf("You are going from %d to %d", startNode, endNode);
 
-                        int fromNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                        int fromNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
-                        int toNodeX = (int) (((((circleDiameter / 2)) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
-                        int toNodeY = (int) (((((circleDiameter / 2)) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                        int fromNodeX = (int) (((((circleDiameter / 2)-40) * (double) Math.cos(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                        int fromNodeY = (int) (((((circleDiameter / 2)-40) * (double) Math.sin(angleSeparating * startNode)) + 30) + circleDiameter / 2);
+                        int toNodeX = (int) (((((circleDiameter / 2)-40) * (double) Math.cos(angleSeparating * endNode)) + 30) + circleDiameter / 2);
+                        int toNodeY = (int) (((((circleDiameter / 2)-40) * (double) Math.sin(angleSeparating * endNode)) + 30) + circleDiameter / 2);
 
                         nodeArrow(fromNodeX, fromNodeY, toNodeX, toNodeY, g);
                     }
