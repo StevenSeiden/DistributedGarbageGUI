@@ -217,6 +217,23 @@ public class Gui {
 
             @Override
             public void before(Message m) {
+                Runnable r = ()->{
+                mh.m = m;
+                System.out.println("m="+m+" "+Node.nodeMap.size());
+
+                paintMe(mh);
+                Thread.yield();
+                jf.getContentPane().requestFocus();
+                SwingUtilities.invokeLater( ()->{
+                    jf.getContentPane().repaint();
+                });
+                waitForMouse();
+                SwingUtilities.invokeLater( ()->{
+                    jf.getContentPane().repaint();
+                });
+                ready = true;
+                };
+                new Thread(r).start();
             }
 
             @Override
@@ -225,35 +242,19 @@ public class Gui {
                 mh.m = m;
                 System.out.println("m="+m+" "+Node.nodeMap.size());
 
-                /*
-                try {
-                    Thread.sleep(250);
-                } catch (InterruptedException ex) {
-                }
-                */
-                //while(true) {
-                    Thread.yield();
-                    //String s = sc.nextLine().trim();
-                    paintMe(mh);
-                    jf.getContentPane().requestFocus();
-                    //jcomp.repaint();
-                    SwingUtilities.invokeLater( ()->{
-                    //jcomp.requestFocus();
+                paintMe(mh);
+                Thread.yield();
+                jf.getContentPane().requestFocus();
+                SwingUtilities.invokeLater( ()->{
                     jf.getContentPane().repaint();
-                    });
-                    waitForMouse();
-                    SwingUtilities.invokeLater( ()->{
-                    //jcomp.requestFocus();
+                });
+                waitForMouse();
+                SwingUtilities.invokeLater( ()->{
                     jf.getContentPane().repaint();
-                    });
-                    System.out.println("repaint()");
-                    System.out.println("m="+m+" "+Node.nodeMap.size());
-                //}
-
+                });
                 ready = true;
                 };
                 new Thread(r).start();
-
             }
 
             @Override

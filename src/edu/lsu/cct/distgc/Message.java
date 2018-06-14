@@ -107,6 +107,7 @@ public abstract class Message {
             return false;
         }
         fireBefore(m);
+        waitFor();
         m.run();
         fireAfter(m);
         waitFor();
