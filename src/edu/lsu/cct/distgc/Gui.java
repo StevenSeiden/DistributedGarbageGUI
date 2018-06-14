@@ -19,13 +19,15 @@ public class Gui {
 
     static class NodePos {
         int x, y; // the position
-        double angleSeparating; //Angle between each node
     }
 
-    NodePos getNodePos(int nodeId, double angleSeparating) {
+    NodePos getNodePos(int nodeId) {
         // Fill in
-        int x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
-        int y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating*nodeId)) + (circleDiameter/2));
+        int nodeAmount = Node.nodeMap.size();
+        double angleSeparating = (2 * Math.PI / nodeAmount);
+        NodePos np = new NodePos();
+        np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
+        np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating*nodeId)) + (circleDiameter/2));
 
 
 
@@ -306,15 +308,17 @@ public class Gui {
 
 
     public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh){
-        NodePos np1 = new NodePos;
-        getNodePos(startNode, angleSeparating);
-        NodePos np2 = new NodePos;
-        getNodePos(endNode, angleSeparating);
 
-        int x1 = np1.x; //nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int y1 = np1.y;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int x2 = np2.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
-        int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        getNodePos(startNode);
+
+        int x1 = NodePos.x; //nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int y1 = NodePos.y;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+
+
+        getNodePos(endNode);
+
+        int x2 = NodePos.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int y2 = NodePos.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
         int arrowColor;
 
         /*if(){
