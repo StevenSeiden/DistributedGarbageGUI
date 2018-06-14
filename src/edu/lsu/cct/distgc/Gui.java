@@ -11,8 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Collections;
 import java.math.*;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class Gui {
     public final static int nodeDiameter = 100;
@@ -21,17 +20,27 @@ public class Gui {
         int x, y; // the position
     }
 
-    NodePos getNodePos(int nodeId) {
+    static <T> ArrayList<T> makeCopy(Collection<T> col) {
+        while(true) {
+            try {
+                ArrayList<T> li = new ArrayList<>();
+                li.addAll(col);
+                return li;
+            } catch(ConcurrentModificationException e) {
+            }
+        }
+    }
+
+    static NodePos getNodePos(int nodeId) {
         // Fill in
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
         np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
         np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating*nodeId)) + (circleDiameter/2));
-
-
-
-        return null;
+        np.x += nodeDiameter / 2;
+        np.y += nodeDiameter / 2;
+        return np;
     }
 
     static class MessageHolder {
@@ -99,16 +108,17 @@ public class Gui {
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
-            g.setFont(new Font("default", Font.BOLD, 26));
+            g.setFont(new Font("default", Font.BOLD, 20));
             g.drawString(mh.m.toString(), 0, 25);
         }
         int n = 0;
 
         try {
-            for (Node node : Node.nodeMap.values()) {
+            for (Node node : makeCopy(Node.nodeMap.values())) {
                 n = node.id;
-                int nodeX = (int) ((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + circleDiameter / 2;
-                int nodeY = (int) ((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + circleDiameter / 2;
+                NodePos np = getNodePos(node.id);
+                int nodeX = np.x - nodeDiameter/2;
+                int nodeY = np.y - nodeDiameter/2;
                 //g.setColor(nodeColor[cidColor.get(key)]);
 
                 String key = "blank";
@@ -128,7 +138,7 @@ public class Gui {
 
                 boolean rootNode = false;
 
-                for(Root r : Root.roots) {
+                for(Root r : makeCopy(Root.roots)) {
                     Node nn = r.get();
                     if(nn != null && r.getId() == node.id){
                         rootNode = true;
@@ -167,11 +177,11 @@ public class Gui {
                 }
                 g.setFont(new Font("default", Font.BOLD, 14));
                 //g.drawString("Placeholder", nodeX + 10, nodeY + 32);
-                g.drawString("[" + node.strong_count + ", " + node.weak_count + ", " + pc + ", " + rcc + "]", nodeX + 15, nodeY + 75);
+                g.drawString("[" + node.strong_count + "," + node.weak_count + "," + pc + "," + rcc + "]", nodeX + 15, nodeY + 75);
                 g.drawString("(" + node.weight + "/" + node.max_weight + ") " + wc, nodeX + 23, nodeY + 90);
 
 
-                for (Integer out : node.edges) {
+                for (Integer out : makeCopy(node.edges)) {
                     if (out != null) {
                         Node child = Node.nodeMap.get(out);
 
@@ -184,6 +194,11 @@ public class Gui {
                         int endNode = child.id;
                         nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh);
                     }
+                }
+            }
+            if(mh.m != null) {
+                if(mh.m.sender != 0) {
+                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh);
                 }
             }
         } catch (Exception e) {
@@ -285,8 +300,8 @@ public class Gui {
         });
 
         System.setProperty("CONGEST_mode", "yes");
-        System.setProperty("test", "clique");
-        System.setProperty("size", "20");
+        System.setProperty("test", "cyclem1");
+        System.setProperty("size", "5");
         System.setProperty("verbose", "yes");
 
         Main.main(new String[0]);
@@ -309,16 +324,16 @@ public class Gui {
 
     public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh){
 
-        getNodePos(startNode);
+        NodePos np1 = getNodePos(startNode);
 
-        int x1 = NodePos.x; //nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int y1 = NodePos.y;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int x1 = np1.x; //nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int y1 = np1.y;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
 
 
-        getNodePos(endNode);
+        NodePos np2 = getNodePos(endNode);
 
-        int x2 = NodePos.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
-        int y2 = NodePos.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int x2 = np2.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
         int arrowColor;
 
         /*if(){
@@ -340,9 +355,9 @@ public class Gui {
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
-        double L = 10; // The length of the arrow head
-        double h = 5;
-        double Radius = nodeDiameter/2;
+        double L = 10*2; // The length of the arrow head
+        double h = L/2;
+        double Radius = nodeDiameter/2+5;
         double offset = 5;
 
 
@@ -364,14 +379,14 @@ public class Gui {
         r3.x1 = x1;
         r3.y1 = y1;
         r3.x2 = (int) (d - L + x1 - Radius);
-        r3.y2 = (int) (y1 - L + offset);
+        r3.y2 = (int) (y1 - h + offset);
         rotate(r3, theta);
 
         Rotate r4 = new Rotate();
         r4.x1 = x1;
         r4.y1 = y1;
         r4.x2 = (int) (d - L + x1 - Radius);
-        r4.y2 = (int) (y1 + L + offset);
+        r4.y2 = (int) (y1 + h + offset);
         rotate(r4, theta);
         g.drawLine(r1.x2, r1.y2, r2.x2, r2.y2);
         g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
