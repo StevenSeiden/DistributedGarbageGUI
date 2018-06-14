@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Gui {
+    public final static int nodeDiameter = 100;
 
     static class MessageHolder {
         Message m;
@@ -88,7 +89,6 @@ public class Gui {
             for (Node node : Node.nodeMap.values()) {
                 int nodeX = (int) ((circleDiameter / 2) * (double) Math.cos(angleSeparating * n)) + circleDiameter / 2;
                 int nodeY = (int) ((circleDiameter / 2) * (double) Math.sin(angleSeparating * n)) + circleDiameter / 2;
-                int nodeDiameter = 100;
                 n++;
                 //g.setColor(nodeColor[cidColor.get(key)]);
 
@@ -302,9 +302,9 @@ public class Gui {
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
-        double L = 10;
+        double L = 10; // The length of the arrow head
         double h = 5;
-        double Radius = 30;
+        double Radius = nodeDiameter/2;
         double offset = 5;
 
 
