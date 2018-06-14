@@ -1,6 +1,7 @@
 package edu.lsu.cct.distgc;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 import java.util.Collections;
 import java.math.*;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Gui {
 
@@ -16,6 +18,19 @@ public class Gui {
         Message m;
     }
 
+    static boolean waitForMouse = true;
+    synchronized static void waitForMouse() {
+        while(waitForMouse) {
+            try {
+                Gui.class.wait();
+            } catch(InterruptedException ie) {}
+        }
+        waitForMouse = true;
+    }
+    synchronized static void mouseIsClicked() {
+        waitForMouse = false;
+        Gui.class.notifyAll();
+    }
 
     static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
             (new Color(193, 135, 227)),
@@ -48,6 +63,8 @@ public class Gui {
     static int circleDiameter = 500;
 
     static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
+        if(mh.m != null)
+            System.out.println("paintMe: mh.m="+mh.m);
 
         /*int circleDiameter;
         if (d.height > d.width) {
@@ -62,6 +79,7 @@ public class Gui {
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
+            g.setFont(new Font("default", Font.BOLD, 26));
             g.drawString(mh.m.toString(), 0, 25);
         }
         int n = 0;
@@ -155,28 +173,47 @@ public class Gui {
         }
     }
 
+    static volatile Image image;
+    static Container jcomp;
+    public static void paintMe(MessageHolder mh) {
+        Dimension d = jcomp.getSize();
+        image = jcomp.createImage(d.width, d.height);
+        paintMe(d, image.getGraphics(), mh);
+    }
+    static JFrame jf;
     public static void main(String[] args) throws Exception {
-        final JFrame jf = new JFrame("Distributed GC GUI");
+        jf = new JFrame("Distributed GC GUI");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
-        c.add(new JComponent() {
+        c.add(jcomp = new Container() {
             @Override
             public void paint(Graphics g) {
+                System.out.println("Paint called");
                 Dimension d = getSize();
+                g.setColor(Color.white);
+                g.fillRect(0,0,d.width,d.height);
                 Image bi = createImage(d.width, d.height);
                 paintMe(d, bi.getGraphics(), mh);
-                g.drawImage(bi, 0, 0, null);
+                g.drawImage(image, 0, 0, null);
 
             }
 
+        });
+        jf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                System.out.println("mouse pressed");
+                mouseIsClicked();
+            }
         });
         jf.pack();
         jf.setVisible(true);
 
         Message.addListener(new MessageListener() {
             boolean ready = true;
+            //Scanner sc = new Scanner(System.in);
 
             @Override
             public void before(Message m) {
@@ -184,15 +221,39 @@ public class Gui {
 
             @Override
             public void after(Message m) {
+                Runnable r = ()->{
                 mh.m = m;
+                System.out.println("m="+m+" "+Node.nodeMap.size());
 
+                /*
                 try {
                     Thread.sleep(250);
                 } catch (InterruptedException ex) {
                 }
-                jf.repaint();
+                */
+                //while(true) {
+                    Thread.yield();
+                    //String s = sc.nextLine().trim();
+                    paintMe(mh);
+                    jf.getContentPane().requestFocus();
+                    //jcomp.repaint();
+                    SwingUtilities.invokeLater( ()->{
+                    //jcomp.requestFocus();
+                    jf.getContentPane().repaint();
+                    });
+                    waitForMouse();
+                    SwingUtilities.invokeLater( ()->{
+                    //jcomp.requestFocus();
+                    jf.getContentPane().repaint();
+                    });
+                    System.out.println("repaint()");
+                    System.out.println("m="+m+" "+Node.nodeMap.size());
+                //}
 
                 ready = true;
+                };
+                new Thread(r).start();
+
             }
 
             @Override

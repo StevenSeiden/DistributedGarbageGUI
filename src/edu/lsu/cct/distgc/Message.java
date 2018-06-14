@@ -13,7 +13,7 @@ public abstract class Message {
 
     private static int msg_seq = 1;
     public final static boolean CONGEST_mode =
-        Props.get("CONGEST_mode").equals("yes");
+        Props.get("CONGEST_mode").equals("no");
     final int msg_id = msg_seq++;
     final int sender, recipient;
     private boolean done;
