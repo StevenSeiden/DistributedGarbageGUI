@@ -15,6 +15,7 @@ import java.util.*;
 
 public class Gui {
     public final static int nodeDiameter = 100;
+    public static Color arrowColor;
 
     static class NodePos {
         int x, y; // the position
@@ -268,6 +269,8 @@ public class Gui {
                 ready = true;
                 };
                 new Thread(r).start();
+
+                arrowColor = Color.red;
             }
 
             @Override
@@ -289,6 +292,7 @@ public class Gui {
                 ready = true;
                 };
                 new Thread(r).start();
+                arrowColor = nodeColor[8];
             }
 
             @Override
@@ -334,21 +338,10 @@ public class Gui {
 
         int x2 = np2.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
         int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
-        int arrowColor;
-
-        /*if(){
-            arrowColor = false;
-        }*/
 
 
         if((mh.m.sender == startNode) && (mh.m.recipient == endNode)){
-            //if(!(Boolean arrowColor)) {
-                g.setColor(Color.red);
-                /*arrowColor = true;
-            } else{
-                g.setColor(Color.green);
-                arrowColor = false;
-            }*/
+            g.setColor(arrowColor);
         }else{
             g.setColor(Color.black);
         }
