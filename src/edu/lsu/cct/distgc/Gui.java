@@ -1,5 +1,7 @@
 package edu.lsu.cct.distgc;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -163,7 +165,7 @@ public class Gui {
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
-                        nodeArrow(angleSeparating, startNode, endNode, g, mh);
+                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh);
                     }
                 }
             }
@@ -287,15 +289,27 @@ public class Gui {
         r.y2 = (int) yn;
     }
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, Graphics g, MessageHolder mh){
-        int x1 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int y1 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int x2 = (int) (((((circleDiameter / 2)-50) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
-        int y2 = (int) (((((circleDiameter / 2)-50) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh){
+        int x1 = nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int y1 = nodeY+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int x2 = (int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int y2 = (int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int arrowColor;
+
+        /*if(){
+            arrowColor = false;
+        }*/
 
 
         if((mh.m.sender == startNode) && (mh.m.recipient == endNode)){
-            g.setColor(Color.red);
+            //if(!(Boolean arrowColor)) {
+                g.setColor(Color.red);
+                /*arrowColor = true;
+            } else{
+                g.setColor(Color.green);
+                arrowColor = false;
+            }*/
         }else{
             g.setColor(Color.black);
         }
@@ -333,7 +347,7 @@ public class Gui {
         r4.x1 = x1;
         r4.y1 = y1;
         r4.x2 = (int) (d - L + x1 - Radius);
-        r4.y2 = (int) (y1 + 10 + offset);
+        r4.y2 = (int) (y1 + L + offset);
         rotate(r4, theta);
         g.drawLine(r1.x2, r1.y2, r2.x2, r2.y2);
         g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
