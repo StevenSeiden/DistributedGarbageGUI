@@ -222,6 +222,14 @@ public class Gui {
         image = jcomp.createImage(d.width, d.height);
         paintMe(d, image.getGraphics(), mh);
     }
+    static void getButtonText() {
+        MessagesOvertake mo = (MessagesOvertake)Message.msgs;
+        System.out.println("BUTTONS START");
+        for(Message m : makeCopy(mo.msgs)) {
+            System.out.println(m.toString());
+        }
+        System.out.println("BUTTONS END");
+    }
     static JFrame jf;
     public static void main(String[] args) throws Exception {
         jf = new JFrame("Distributed GC GUI");
@@ -296,6 +304,7 @@ public class Gui {
                     jf.getContentPane().repaint();
                 });
                 waitForMouse();
+                getButtonText();
                 SwingUtilities.invokeLater( ()->{
                     jf.getContentPane().repaint();
                 });
