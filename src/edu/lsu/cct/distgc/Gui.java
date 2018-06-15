@@ -18,6 +18,7 @@ import javax.imageio.ImageIO;
 public class Gui {
     public final static int nodeDiameter = 100;
     public static Color arrowColor;
+    public static int baseOffset = 5;
 
     static class NodePos {
         int x, y; // the position
@@ -195,13 +196,17 @@ public class Gui {
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
-                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh);
+                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh, baseOffset);
                     }
+                }
+                if(node.cd != null && node.cd.parent > 0) {
+                    System.out.printf(">>>> PARENT %d -> %d%n",node.id,node.cd.parent);
+                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3);
                 }
             }
             if(mh.m != null) {
                 if(mh.m.sender != 0) {
-                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh);
+                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset);
                 }
             }
         } catch (Exception e) {
@@ -370,7 +375,7 @@ public class Gui {
     }
 
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh){
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh,int offset){
 
         NodePos np1 = getNodePos(startNode);
 
@@ -389,13 +394,15 @@ public class Gui {
         }else{
             g.setColor(Color.black);
         }
+        if(offset > baseOffset)
+            g.setColor(Color.blue);
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
         double L = 10*2; // The length of the arrow head
         double h = L/2;
         double Radius = nodeDiameter/2+5;
-        double offset = 5;
+        //double offset = 5;
 
 
         Rotate r1 = new Rotate();
