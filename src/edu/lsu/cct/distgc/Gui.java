@@ -221,10 +221,32 @@ public class Gui {
     public static void main(String[] args) throws Exception {
         jf = new JFrame("Distributed GC GUI");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JPanel buttonPanel = new JPanel();
+        jf.add(buttonPanel, BorderLayout.LINE_END);
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
-        c.add(jcomp = new Container() {
+
+        Button button1=new Button("Button #1");
+        Button button2=new Button("Button #2");
+        Button button3=new Button("Button #3");
+        Button button4=new Button("Button #4");
+
+        GridLayout layout = new GridLayout(7, 2);
+        layout.setVgap(10);
+        buttonPanel.setLayout(layout);
+        buttonPanel.add(button1);
+        buttonPanel.add(button2);
+        buttonPanel.add(button3);
+        buttonPanel.add(button4);
+
+        jf.pack();
+        buttonPanel.setVisible(true);
+        buttonPanel.revalidate();
+        buttonPanel.repaint();
+
+
+        jf.add(jcomp = new Container() {
             @Override
             public void paint(Graphics g) {
                 System.out.println("Paint called");
@@ -238,6 +260,8 @@ public class Gui {
             }
 
         });
+
+
         jf.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
@@ -326,6 +350,9 @@ public class Gui {
         System.setProperty("verbose", "yes");
 
         Main.main(new String[0]);
+
+
+
     }
 
     static class Rotate {
