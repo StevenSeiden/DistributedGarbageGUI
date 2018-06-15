@@ -14,6 +14,7 @@ import java.math.*;
 import java.util.*;
 import java.io.File;
 import javax.imageio.ImageIO;
+import java.awt.geom.AffineTransform;
 
 public class Gui {
     public final static int nodeDiameter = 100;
@@ -98,6 +99,14 @@ public class Gui {
     static int circleDiameter = 500;
 
     static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
+        g.setColor(Color.white);
+        g.fillRect(0,0,d.width,d.height);
+
+        AffineTransform af = new AffineTransform();
+        af.translate(50,0);
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setTransform(af);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if(mh.m != null)
             System.out.println("paintMe: mh.m="+mh.m);
 
@@ -110,6 +119,7 @@ public class Gui {
 
 
         // The big circle
+        g.setColor(Color.black);
         g.drawOval(50, 50, circleDiameter, circleDiameter);
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
@@ -202,16 +212,16 @@ public class Gui {
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
-                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh, baseOffset);
+                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh, baseOffset, Color.black);
                     }
                 }
                 if(node.cd != null && node.cd.parent > 0) {
-                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3);
+                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3, Color.blue);
                 }
             }
             if(mh.m != null) {
                 if(mh.m.sender != 0) {
-                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset);
+                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset*3, arrowColor);
                 }
             }
         } catch (Exception e) {
@@ -367,10 +377,9 @@ public class Gui {
             }
         });
 
-        System.setProperty("CONGEST_mode", "yes");
-        System.setProperty("test", "cycle");
-        System.setProperty("size", "5");
-        System.setProperty("verbose", "yes");
+        System.setProperty("test", "cyclem1");
+        System.setProperty("size", "2");
+        System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
 
@@ -393,7 +402,7 @@ public class Gui {
     }
 
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh,int offset){
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh,int offset, Color color){
 
         NodePos np1 = getNodePos(startNode);
 
@@ -407,13 +416,13 @@ public class Gui {
         int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
 
 
-        if((mh.m.sender == startNode) && (mh.m.recipient == endNode)){
+        if((mh.m.sender == startNode) && (mh.m.recipient == endNode) && offset <= baseOffset ){
             g.setColor(arrowColor);
         }else{
             g.setColor(Color.black);
         }
-        if(offset > baseOffset)
-            g.setColor(Color.blue);
+        if(color != null)
+            g.setColor(color);
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
