@@ -10,7 +10,7 @@ package edu.lsu.cct.distgc;
  * @author sbrandt
  */
 public interface MessageListener {
-    void before(Message m);
-    void after(Message m);
+    void before(Message m,int step);
+    void after(Message m,int step);
     boolean ready();
 }

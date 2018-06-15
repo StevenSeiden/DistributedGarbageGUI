@@ -49,6 +49,8 @@ public class Gui {
 
     static class MessageHolder {
         Message m;
+        int step;
+        int phase;
     }
 
     static boolean waitForMouse = true;
@@ -113,7 +115,11 @@ public class Gui {
         double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
             g.setFont(new Font("default", Font.BOLD, 20));
-            g.drawString(mh.m.toString(), 0, 25);
+            String m = mh.m.toString();
+            int pos = m.indexOf('(');
+            if(pos > 0)
+                m = m.substring(0,pos);
+            g.drawString(m, 0, 25);
         }
         int n = 0;
 
@@ -200,7 +206,6 @@ public class Gui {
                     }
                 }
                 if(node.cd != null && node.cd.parent > 0) {
-                    System.out.printf(">>>> PARENT %d -> %d%n",node.id,node.cd.parent);
                     nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3);
                 }
             }
@@ -286,15 +291,16 @@ public class Gui {
         jf.setVisible(true);
 
         Message.addListener(new MessageListener() {
-            boolean ready = true;
+            boolean ready = false;
             //Scanner sc = new Scanner(System.in);
             //
-            int step = 0;
 
             @Override
-            public void before(Message m) {
+            public void before(Message m,int step) {
                 Runnable r = ()->{
                 mh.m = m;
+                mh.step = step;
+                mh.phase = 1;
                 System.out.println("m="+m+" "+Node.nodeMap.size());
 
                 paintMe(mh);
@@ -310,6 +316,7 @@ public class Gui {
                 });
                 ready = true;
                 File file = new File(String.format("frame-%d-1.png", step));
+                System.out.println(" FILE: "+file);
                 try {
                     ImageIO.write((BufferedImage)image,"png",file);
                 } catch(Exception e) {
@@ -322,9 +329,11 @@ public class Gui {
             }
 
             @Override
-            public void after(Message m) {
+            public void after(Message m,int step) {
                 Runnable r = ()->{
                 mh.m = m;
+                mh.step = step;
+                mh.phase = 2;
                 System.out.println("m="+m+" "+Node.nodeMap.size());
 
                 paintMe(mh);
@@ -338,12 +347,12 @@ public class Gui {
                     jf.getContentPane().repaint();
                 });
                 File file = new File(String.format("frame-%d-2.png", step));
+                System.out.println(" FILE: "+file);
                 try {
                     ImageIO.write((BufferedImage)image,"png",file);
                 } catch(Exception e) {
                     e.printStackTrace(); System.exit(0);
                 }
-                step++;
                 ready = true;
                 };
                 new Thread(r).start();
@@ -359,7 +368,7 @@ public class Gui {
         });
 
         System.setProperty("CONGEST_mode", "yes");
-        System.setProperty("test", "cyclem1");
+        System.setProperty("test", "cycle");
         System.setProperty("size", "5");
         System.setProperty("verbose", "yes");
 

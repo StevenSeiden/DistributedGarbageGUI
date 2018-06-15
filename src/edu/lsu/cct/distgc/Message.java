@@ -118,23 +118,26 @@ public abstract class Message {
     public static synchronized void addListener(MessageListener ml) {
         watchers.add(ml);
     }
+    static int stepBefore = 0, stepAfter = 0;
     private static synchronized void fireBefore(Message m) {
         for(MessageListener ml : watchers) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override public void run() {
-                    ml.before(m);
+                    ml.before(m,stepBefore);
                 }
             });
         }
+        stepBefore++;
     }
     private static synchronized void fireAfter(Message m) {
         for(MessageListener ml : watchers) {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override public void run() {
-                    ml.after(m);
+                    ml.after(m,stepAfter);
                 }
             });
         }
+        stepAfter++;
     }
     private static synchronized void waitFor() {
         try {
