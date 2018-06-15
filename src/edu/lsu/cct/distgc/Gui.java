@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import java.util.Collections;
 import java.math.*;
 import java.util.*;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 public class Gui {
     public final static int nodeDiameter = 100;
@@ -249,6 +251,8 @@ public class Gui {
         Message.addListener(new MessageListener() {
             boolean ready = true;
             //Scanner sc = new Scanner(System.in);
+            //
+            int step = 0;
 
             @Override
             public void before(Message m) {
@@ -267,6 +271,12 @@ public class Gui {
                     jf.getContentPane().repaint();
                 });
                 ready = true;
+                File file = new File(String.format("frame-%d-1.png", step));
+                try {
+                    ImageIO.write((BufferedImage)image,"png",file);
+                } catch(Exception e) {
+                    e.printStackTrace(); System.exit(0);
+                }
                 };
                 new Thread(r).start();
 
@@ -289,6 +299,13 @@ public class Gui {
                 SwingUtilities.invokeLater( ()->{
                     jf.getContentPane().repaint();
                 });
+                File file = new File(String.format("frame-%d-2.png", step));
+                try {
+                    ImageIO.write((BufferedImage)image,"png",file);
+                } catch(Exception e) {
+                    e.printStackTrace(); System.exit(0);
+                }
+                step++;
                 ready = true;
                 };
                 new Thread(r).start();
