@@ -346,10 +346,17 @@ public abstract class Message {
         return rcount;
     }
 
+    public static volatile Message guiMessage;
+
     /**
      * Execute msg specified
      */
     public static void runMsg(int nodeId, int msgId) {
+        if(guiMessage != null) {
+            nodeId = guiMessage.recipient;
+            msgId = guiMessage.msg_id;
+            guiMessage = null;
+        }
     	Message msg = msgs.getMessage(nodeId, msgId);
         if(msg == null)
             throw new NoSuchMessage();
