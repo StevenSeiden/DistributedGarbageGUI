@@ -29,7 +29,8 @@ public class Gui {
         while(true) {
             try {
                 ArrayList<T> li = new ArrayList<>();
-                li.addAll(col);
+                if(col != null)
+                    li.addAll(col);
                 return li;
             } catch(ConcurrentModificationException e) {
             }
@@ -377,8 +378,9 @@ public class Gui {
             }
         });
 
-        System.setProperty("test", "cyclem1");
-        System.setProperty("size", "2");
+        if(System.getProperty("test") == null)
+            System.setProperty("test", "cycle");
+        System.setProperty("size", "20");
         System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
@@ -416,11 +418,13 @@ public class Gui {
         int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
 
 
+        /*
         if((mh.m.sender == startNode) && (mh.m.recipient == endNode) && offset <= baseOffset ){
             g.setColor(arrowColor);
         }else{
             g.setColor(Color.black);
         }
+        */
         if(color != null)
             g.setColor(color);
 

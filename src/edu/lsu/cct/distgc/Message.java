@@ -173,6 +173,7 @@ public abstract class Message {
             roundCount++;
             for (Message msg : mails) {
                 fireBefore(msg);
+                waitFor();
                 msg.run();
                 fireAfter(msg);
                 waitFor();
@@ -352,7 +353,12 @@ public abstract class Message {
     	Message msg = msgs.getMessage(nodeId, msgId);
         if(msg == null)
             throw new NoSuchMessage();
-    	msg.run();
+        System.out.println("----->runMsg()");
+        fireBefore(msg);
+        waitFor();
+        msg.run();
+        fireAfter(msg);
+        waitFor();
     }
 
     /**

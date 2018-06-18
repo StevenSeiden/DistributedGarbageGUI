@@ -148,8 +148,10 @@ public final class SimulationExecutor {
             if(!found)
                 throw new RuntimeException(
                     "To add a root edge to a Node N, there must be a node M such that 0 -> M -> N. line="+lineNo);
-            if(r == null) r = new Root(adv);
-            r.set(Node.nodeMap.get(destNode),adv);
+            if(r == null)
+                r = new Root(adv,Node.nodeMap.get(destNode));
+            else
+                r.set(Node.nodeMap.get(destNode),adv);
             roots.put(destNode,r);
         } else if(sourceNode > 0) {
             assert destNode > 0 : "Line: " + lineNo
