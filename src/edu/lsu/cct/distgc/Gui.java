@@ -238,14 +238,23 @@ public class Gui {
         image = jcomp.createImage(d.width, d.height);
         paintMe(d, image.getGraphics(), mh);
     }
+
+    static ArrayList<String> buttonMessage = new ArrayList<>();
+    static JButton button1=new JButton("Button #1");
+
     static void getButtonText() {
         MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
         for(Message m : makeCopy(mo.msgs)) {
-            System.out.println(m.toString());
+            //System.out.println(m.toString());
+            buttonMessage.add(m.toString());
+        }
+        if(buttonMessage.size()>0) {
+            System.out.println(buttonMessage.get(0));
         }
         System.out.println("BUTTONS END");
     }
+
     static JFrame jf;
     public static void main(String[] args) throws Exception {
         jf = new JFrame("Distributed GC GUI");
@@ -255,11 +264,22 @@ public class Gui {
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
+        getButtonText();
 
-        Button button1=new Button("Button #1");
-        Button button2=new Button("Button #2");
-        Button button3=new Button("Button #3");
-        Button button4=new Button("Button #4");
+        //JButton button1=new JButton("Button #1");
+        JButton button2=new JButton("Button #2");
+        JButton button3=new JButton("Button #3");
+        JButton button4=new JButton("Button #4");
+
+        /*if(buttonMessage.size()>0) {
+            //button1=new JButton(buttonMessage.get(0));
+            //button1.setText(buttonMessage.get(0));
+            //buttonPanel.repaint();
+            System.out.println("not rarted");
+        } else {
+            System.out.println("rarted");
+        }*/
+
 
         GridLayout layout = new GridLayout(7, 2);
         layout.setVgap(10);
@@ -279,6 +299,16 @@ public class Gui {
             @Override
             public void paint(Graphics g) {
                 System.out.println("Paint called");
+
+                if(buttonMessage.size()>0) {
+                    button1.setText(buttonMessage.get(0));
+                    buttonPanel.repaint();
+                    System.out.println("not rarted");
+                } else {
+                    button1.setText("Button 1");
+                    System.out.println("rarted");
+                }
+
                 Dimension d = getSize();
                 g.setColor(Color.white);
                 g.fillRect(0,0,d.width,d.height);
