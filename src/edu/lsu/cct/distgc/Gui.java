@@ -246,6 +246,15 @@ public class Gui {
     static JButton button4=new JButton("Button #4");
     static JButton button5=new JButton("Button #5");
     static JButton button6=new JButton("Button #6");
+    static JButton button7=new JButton("Button #7");
+    static JButton button8=new JButton("Button #8");
+    static JButton button9=new JButton("Button #9");
+    static JButton button10=new JButton("Button #10");
+    static JButton button11=new JButton("Button #11");
+    static JButton button12=new JButton("Button #12");
+    static JButton button13=new JButton("Button #13");
+    static JButton button14=new JButton("Button #14");
+    static JButton button15=new JButton("Button #15");
 
     static void getButtonText() {
         MessagesOvertake mo = (MessagesOvertake)Message.msgs;
@@ -272,7 +281,7 @@ public class Gui {
         getButtonText();
 
 
-        GridLayout layout = new GridLayout(7, 2);
+        GridLayout layout = new GridLayout(15, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
         buttonPanel.add(button1);
@@ -281,6 +290,15 @@ public class Gui {
         buttonPanel.add(button4);
         buttonPanel.add(button5);
         buttonPanel.add(button6);
+        buttonPanel.add(button7);
+        buttonPanel.add(button8);
+        buttonPanel.add(button9);
+        buttonPanel.add(button10);
+        buttonPanel.add(button11);
+        buttonPanel.add(button12);
+        buttonPanel.add(button13);
+        buttonPanel.add(button14);
+        buttonPanel.add(button15);
 
         jf.pack();
         buttonPanel.setVisible(true);
@@ -311,6 +329,33 @@ public class Gui {
                     }
                     if(buttonMessage.get(5) != null) {
                         button6.setText(buttonMessage.get(5));
+                    }
+                    if(buttonMessage.get(6) != null) {
+                        button7.setText(buttonMessage.get(6));
+                    }
+                    if(buttonMessage.get(7) != null) {
+                        button8.setText(buttonMessage.get(7));
+                    }
+                    if(buttonMessage.get(8) != null) {
+                        button9.setText(buttonMessage.get(8));
+                    }
+                    if(buttonMessage.get(9) != null) {
+                        button10.setText(buttonMessage.get(9));
+                    }
+                    if(buttonMessage.get(10) != null) {
+                        button11.setText(buttonMessage.get(10));
+                    }
+                    if(buttonMessage.get(11) != null) {
+                        button12.setText(buttonMessage.get(11));
+                    }
+                    if(buttonMessage.get(12) != null) {
+                        button13.setText(buttonMessage.get(12));
+                    }
+                    if(buttonMessage.get(13) != null) {
+                        button14.setText(buttonMessage.get(13));
+                    }
+                    if(buttonMessage.get(14) != null) {
+                        button15.setText(buttonMessage.get(14));
                     }
                     buttonPanel.repaint();
                     System.out.println("not rarted");
