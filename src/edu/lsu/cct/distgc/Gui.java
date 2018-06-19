@@ -240,7 +240,8 @@ public class Gui {
     }
 
     static ArrayList<String> buttonMessage = new ArrayList<>();
-    static JButton button1=new JButton("Button #1");
+
+    /*static JButton button1=new JButton("Button #1");
     static JButton button2=new JButton("Button #2");
     static JButton button3=new JButton("Button #3");
     static JButton button4=new JButton("Button #4");
@@ -254,7 +255,16 @@ public class Gui {
     static JButton button12=new JButton("Button #12");
     static JButton button13=new JButton("Button #13");
     static JButton button14=new JButton("Button #14");
-    static JButton button15=new JButton("Button #15");
+    static JButton button15=new JButton("Button #15");*/
+
+
+
+
+    static JButton[] buttons = new JButton[15];
+
+
+
+
 
     static void getButtonText() {
         MessagesOvertake mo = (MessagesOvertake)Message.msgs;
@@ -278,27 +288,25 @@ public class Gui {
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
+
+        for(int i=0; i<buttons.length; i++) {
+            buttons[i] = new JButton("Button #"+i);
+        }
+
+
+
         getButtonText();
 
 
         GridLayout layout = new GridLayout(15, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
-        buttonPanel.add(button1);
-        buttonPanel.add(button2);
-        buttonPanel.add(button3);
-        buttonPanel.add(button4);
-        buttonPanel.add(button5);
-        buttonPanel.add(button6);
-        buttonPanel.add(button7);
-        buttonPanel.add(button8);
-        buttonPanel.add(button9);
-        buttonPanel.add(button10);
-        buttonPanel.add(button11);
-        buttonPanel.add(button12);
-        buttonPanel.add(button13);
-        buttonPanel.add(button14);
-        buttonPanel.add(button15);
+
+
+        for(int i=0; i<buttons.length; i++) {
+            buttonPanel.add(buttons[i]);
+        }
+
 
         jf.pack();
         buttonPanel.setVisible(true);
@@ -311,64 +319,10 @@ public class Gui {
             public void paint(Graphics g) {
                 System.out.println("Paint called");
 
-                final JButton[] buttonArray = {button1, button2, button3, button4, button5, button6, button7,
-                        button8, button9, button10, button11, button12, button13, button14, button15};
 
-                for (int i = 0; i < buttonMessage.size() && i < buttonArray.length; i++) {
-                    buttonArray[i].setText(buttonMessage.get(i));
+                for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                    buttons[i].setText(buttonMessage.get(i));
                 }
-
-                /*if(buttonMessage.size()>0) {
-                    if(buttonMessage.get(0) != null) {
-                        button1.setText(buttonMessage.get(0));
-                    }
-                    if(buttonMessage.get(1) != null) {
-                        button2.setText(buttonMessage.get(1));
-                    }
-                    if(buttonMessage.get(2) != null) {
-                        button3.setText(buttonMessage.get(2));
-                    }
-                    if(buttonMessage.get(3) != null) {
-                        button4.setText(buttonMessage.get(3));
-                    }
-                    if(buttonMessage.get(4) != null) {
-                        button5.setText(buttonMessage.get(4));
-                    }
-                    if(buttonMessage.get(5) != null) {
-                        button6.setText(buttonMessage.get(5));
-                    }
-                    if(buttonMessage.get(6) != null) {
-                        button7.setText(buttonMessage.get(6));
-                    }
-                    if(buttonMessage.get(7) != null) {
-                        button8.setText(buttonMessage.get(7));
-                    }
-                    if(buttonMessage.get(8) != null) {
-                        button9.setText(buttonMessage.get(8));
-                    }
-                    if(buttonMessage.get(9) != null) {
-                        button10.setText(buttonMessage.get(9));
-                    }
-                    if(buttonMessage.get(10) != null) {
-                        button11.setText(buttonMessage.get(10));
-                    }
-                    if(buttonMessage.get(11) != null) {
-                        button12.setText(buttonMessage.get(11));
-                    }
-                    if(buttonMessage.get(12) != null) {
-                        button13.setText(buttonMessage.get(12));
-                    }
-                    if(buttonMessage.get(13) != null) {
-                        button14.setText(buttonMessage.get(13));
-                    }
-                    if(buttonMessage.get(14) != null) {
-                        button15.setText(buttonMessage.get(14));
-                    }
-                    buttonPanel.repaint();
-                    System.out.println("not rarted");
-                } else {
-                    System.out.println("rarted");
-                }*/
 
                 Dimension d = getSize();
                 g.setColor(Color.white);
