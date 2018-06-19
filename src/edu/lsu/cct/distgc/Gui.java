@@ -311,7 +311,14 @@ public class Gui {
             public void paint(Graphics g) {
                 System.out.println("Paint called");
 
-                if(buttonMessage.size()>0) {
+                final JButton[] buttonArray = {button1, button2, button3, button4, button5, button6, button7,
+                        button8, button9, button10, button11, button12, button13, button14, button15};
+
+                for (int i = 0; i < buttonMessage.size() && i < buttonArray.length; i++) {
+                    buttonArray[i].setText(buttonMessage.get(i));
+                }
+
+                /*if(buttonMessage.size()>0) {
                     if(buttonMessage.get(0) != null) {
                         button1.setText(buttonMessage.get(0));
                     }
@@ -361,7 +368,7 @@ public class Gui {
                     System.out.println("not rarted");
                 } else {
                     System.out.println("rarted");
-                }
+                }*/
 
                 Dimension d = getSize();
                 g.setColor(Color.white);
@@ -464,7 +471,7 @@ public class Gui {
 
         if(System.getProperty("test") == null)
             System.setProperty("test", "cycle");
-        System.setProperty("size", "20");
+        System.setProperty("size", "2"); //How many nodes
         System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
