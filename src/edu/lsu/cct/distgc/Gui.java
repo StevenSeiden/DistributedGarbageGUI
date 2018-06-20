@@ -43,6 +43,7 @@ public class Gui {
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
         np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
+
         np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating*nodeId)) + (circleDiameter/2));
         np.x += nodeDiameter / 2;
         np.y += nodeDiameter / 2;
@@ -239,24 +240,8 @@ public class Gui {
         paintMe(d, image.getGraphics(), mh);
     }
 
-    static ArrayList<String> buttonMessage = new ArrayList<>();
-
-    /*static JButton button1=new JButton("Button #1");
-    static JButton button2=new JButton("Button #2");
-    static JButton button3=new JButton("Button #3");
-    static JButton button4=new JButton("Button #4");
-    static JButton button5=new JButton("Button #5");
-    static JButton button6=new JButton("Button #6");
-    static JButton button7=new JButton("Button #7");
-    static JButton button8=new JButton("Button #8");
-    static JButton button9=new JButton("Button #9");
-    static JButton button10=new JButton("Button #10");
-    static JButton button11=new JButton("Button #11");
-    static JButton button12=new JButton("Button #12");
-    static JButton button13=new JButton("Button #13");
-    static JButton button14=new JButton("Button #14");
-    static JButton button15=new JButton("Button #15");*/
-
+    static ArrayList<Message> buttonMessage = new ArrayList<>();
+    static HashMap<String, Message> messageButtons = new HashMap<String, Message>();
 
 
 
@@ -270,8 +255,8 @@ public class Gui {
         MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
         for(Message m : makeCopy(mo.msgs)) {
-            //System.out.println(m.toString());
-            buttonMessage.add(m.toString());
+            buttonMessage.add(m);
+            messageButtons.put(m.toString(),m);
         }
         if(buttonMessage.size()>0) {
             System.out.println(buttonMessage.get(0));
@@ -293,8 +278,6 @@ public class Gui {
             buttons[i] = new JButton("Button #"+i);
         }
 
-
-
         getButtonText();
 
 
@@ -313,6 +296,16 @@ public class Gui {
         buttonPanel.revalidate();
         buttonPanel.repaint();
 
+        for(final int[] i = {0}; i[0]<buttons.length; i[0]++) {
+            int ii = i[0];
+            buttons[i[0]].addActionListener(a -> {
+                System.out.println("Button pressed!");
+                Message.guiMessage = buttonMessage.get(ii);
+            });
+        }
+
+
+
 
         jf.add(jcomp = new Container() {
             @Override
@@ -320,8 +313,26 @@ public class Gui {
                 System.out.println("Paint called");
 
 
-                for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                /*for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                    boolean duplicateButton;
+
+                    for(int j=0; j < buttonMessage.size() && j < buttons.length; j++){
+                        if(buttons[j].getText() == buttonMessage.get(i)){
+                            duplicateButton = false;
+                        }else{
+                            duplicateButton = true;
+                        }
+                    }
+                    if(!duplicateButton) {
+                        buttons[i].setText(buttonMessage.get(i));
+                    }
+
                     buttons[i].setText(buttonMessage.get(i));
+
+                }*/
+
+                for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                    buttons[i].setText(buttonMessage.get(i).toString());
                 }
 
                 Dimension d = getSize();
@@ -425,7 +436,7 @@ public class Gui {
 
         if(System.getProperty("test") == null)
             System.setProperty("test", "cycle");
-        System.setProperty("size", "2"); //How many nodes
+        System.setProperty("size", "10"); //How many nodes
         System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
