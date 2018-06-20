@@ -241,7 +241,6 @@ public class Gui {
     }
 
     static ArrayList<Message> buttonMessage = new ArrayList<>();
-    static HashMap<String, Message> messageButtons = new HashMap<String, Message>();
 
 
 
@@ -255,8 +254,16 @@ public class Gui {
         MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
         for(Message m : makeCopy(mo.msgs)) {
-            buttonMessage.add(m);
-            messageButtons.put(m.toString(),m);
+            boolean messageUsed = false;
+            for(int c = 0; c<=buttonMessage.size();c++){
+                if(m==buttonMessage[c]){
+                    messageUsed = true;
+                }
+            }
+
+            if(!messageUsed) {
+                buttonMessage.add(m);
+            }
         }
         if(buttonMessage.size()>0) {
             System.out.println(buttonMessage.get(0));
@@ -324,10 +331,8 @@ public class Gui {
                         }
                     }
                     if(!duplicateButton) {
-                        buttons[i].setText(buttonMessage.get(i));
+                        buttons[i].setText(buttonMessage.get(i).toString());
                     }
-
-                    buttons[i].setText(buttonMessage.get(i));
 
                 }*/
 
