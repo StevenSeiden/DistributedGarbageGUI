@@ -255,6 +255,10 @@ public class Gui {
         //MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
         for(Message m : Message.msgs) {
+            /*for(int c = 0; c<buttonMessage.size();c++){
+                buttonMessage.set(c,null);
+            }
+            buttonMessage.add(m);*/
             boolean messageUsed = false;
             for(int c = 0; c<buttonMessage.size();c++){
                 if(m==buttonMessage.get(c)){
@@ -270,6 +274,7 @@ public class Gui {
             System.out.println(buttonMessage.get(0));
         }
         System.out.println("BUTTONS END");
+
     }
 
     static JFrame jf;
@@ -323,7 +328,7 @@ public class Gui {
 
 
                 /*for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
-                    boolean duplicateButton;
+                    boolean duplicateButton;›
 
                     for(int j=0; j < buttonMessage.size() && j < buttons.length; j++){
                         if(buttons[j].getText() == buttonMessage.get(i)){
