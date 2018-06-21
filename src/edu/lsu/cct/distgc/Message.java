@@ -13,7 +13,7 @@ public abstract class Message {
 
     private static int msg_seq = 1;
     public final static boolean CONGEST_mode =
-        Props.get("CONGEST_mode").equals("no");
+        Props.get("CONGEST_mode").equals("yes");
     final int msg_id = msg_seq++;
     final int sender, recipient;
     private boolean done;
@@ -32,7 +32,9 @@ public abstract class Message {
     static int messageCount = 0;
 
     public void run() {
-        assert !done : this;
+        //assert !done : this;
+        if(done)
+            return;
         done = true;
         Node r = Node.nodeMap.get(recipient);
         if (Here.VERBOSE) {
@@ -93,6 +95,41 @@ public abstract class Message {
         msgs.sendMessage(m);
     }
 
+    static synchronized void waitForNoGui() {
+        while(guiMessage != null) {
+            try {
+                Message.class.wait(100);
+            } catch(InterruptedException ie) {}
+        }
+    }
+
+    static synchronized void setGuiMessage(Message m) {
+        guiMessage = m;
+        Message.class.notifyAll();
+    }
+
+    static synchronized Message waitForGui() {
+        System.out.println("Call waitForGui()");
+        while(guiMessage == null) {
+            List<Message> ma = new ArrayList<>();
+            for(Message m : msgs) {
+                ma.add(m);
+                System.out.println(" --> m="+m);
+            }
+            if(ma.size()==1) {
+                guiMessage = ma.get(0);
+                break;
+            }
+            try {
+                Message.class.wait(100);
+            } catch(InterruptedException ie) {}
+        }
+        Message m = guiMessage;
+        guiMessage = null;
+        Message.class.notifyAll();
+        return m;
+    }
+
     /**
      * Run a single message
      *
@@ -102,12 +139,33 @@ public abstract class Message {
         if (CONGEST_mode) {
             return runOneRound();
         }
-        Message m = msgs.nextToRun();
-        if (m == null) {
+        System.out.println(":: RUN ONE");
+        /*
+        if(guiMessage == null) {
+            System.out.println("No message provided by GUI");
             return false;
         }
+        */
+        Message m = waitForGui();
+        /*
+        while(guiMessage == null) {
+            System.out.println("Waiting for a message...");
+            waitForGui();
+            int nodeId = guiMessage.recipient;
+            int msgId = guiMessage.msg_id;
+            // yyy
+    	    m = msgs.getMessage(nodeId, msgId);
+            guiMessage = null;
+            System.out.println(":: GOT GUI "+m);
+        }
+        */
+        if (m == null) {
+            System.out.println(":: No message");
+            return false;
+        }
+        System.out.println(":: Run Message");
         fireBefore(m);
-        waitFor();
+        //waitFor();
         m.run();
         fireAfter(m);
         waitFor();
@@ -163,6 +221,7 @@ public abstract class Message {
      * @return true if a message was run
      */
     public static boolean runOneRound() {
+        System.out.println("RUN ONE ROUND");
         List<Message> mails = msgs.nextRoundToRun();
         if (mails.isEmpty()) {
             return false;
@@ -209,7 +268,7 @@ public abstract class Message {
         } else {
             while (!isDone()) {
                 boolean success = runOne();
-                assert success;
+                //assert success;
             }
         }
     }
@@ -346,17 +405,12 @@ public abstract class Message {
         return rcount;
     }
 
-    public static volatile Message guiMessage;
+    private static volatile Message guiMessage;
 
     /**
      * Execute msg specified
      */
     public static void runMsg(int nodeId, int msgId) {
-        if(guiMessage != null) {
-            nodeId = guiMessage.recipient;
-            msgId = guiMessage.msg_id;
-            guiMessage = null;
-        }
     	Message msg = msgs.getMessage(nodeId, msgId);
         if(msg == null)
             throw new NoSuchMessage();

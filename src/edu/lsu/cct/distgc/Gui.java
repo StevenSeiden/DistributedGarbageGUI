@@ -68,6 +68,7 @@ public class Gui {
     synchronized static void mouseIsClicked() {
         waitForMouse = false;
         Gui.class.notifyAll();
+        //Message.waitForNoGui();
     }
 
     static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
@@ -251,12 +252,12 @@ public class Gui {
 
 
     static void getButtonText() {
-        MessagesOvertake mo = (MessagesOvertake)Message.msgs;
+        //MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
-        for(Message m : makeCopy(mo.msgs)) {
+        for(Message m : Message.msgs) {
             boolean messageUsed = false;
-            for(int c = 0; c<=buttonMessage.size();c++){
-                if(m==buttonMessage[c]){
+            for(int c = 0; c<buttonMessage.size();c++){
+                if(m==buttonMessage.get(c)){
                     messageUsed = true;
                 }
             }
@@ -307,7 +308,7 @@ public class Gui {
             int ii = i[0];
             buttons[i[0]].addActionListener(a -> {
                 System.out.println("Button pressed!");
-                Message.guiMessage = buttonMessage.get(ii);
+                Message.setGuiMessage(buttonMessage.get(ii));
             });
         }
 
@@ -439,15 +440,11 @@ public class Gui {
             }
         });
 
-        if(System.getProperty("test") == null)
-            System.setProperty("test", "cycle");
-        System.setProperty("size", "10"); //How many nodes
-        System.setProperty("verbose", "no");
+        //System.setProperty("test", "cycle");
+        //System.setProperty("size", "2"); //How many nodes
+        //System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
-
-
-
     }
 
     static class Rotate {
