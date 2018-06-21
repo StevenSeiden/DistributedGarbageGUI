@@ -114,7 +114,6 @@ public abstract class Message {
             List<Message> ma = new ArrayList<>();
             for(Message m : msgs) {
                 ma.add(m);
-                System.out.println(" --> m="+m);
             }
             if(ma.size()==1) {
                 guiMessage = ma.get(0);

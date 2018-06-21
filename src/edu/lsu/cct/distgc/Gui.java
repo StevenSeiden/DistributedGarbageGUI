@@ -309,6 +309,7 @@ public class Gui {
             buttons[i[0]].addActionListener(a -> {
                 System.out.println("Button pressed!");
                 Message.setGuiMessage(buttonMessage.get(ii));
+                getButtonText();
             });
         }
 
