@@ -242,6 +242,7 @@ public class Gui {
     }
 
     static ArrayList<Message> buttonMessage = new ArrayList<>();
+    static java.util.List<Message> messages = new ArrayList<>();
 
 
 
@@ -254,11 +255,11 @@ public class Gui {
     static void getButtonText() {
         //MessagesOvertake mo = (MessagesOvertake)Message.msgs;
         System.out.println("BUTTONS START");
+        for(int c = 0; c<buttonMessage.size();c++){
+            buttonMessage.set(c,null);
+        }
         for(Message m : Message.msgs) {
-            /*for(int c = 0; c<buttonMessage.size();c++){
-                buttonMessage.set(c,null);
-            }
-            buttonMessage.add(m);*/
+
             boolean messageUsed = false;
             for(int c = 0; c<buttonMessage.size();c++){
                 if(m==buttonMessage.get(c)){
@@ -266,10 +267,22 @@ public class Gui {
                 }
             }
 
+            /*for(int c = 0; c<buttonMessage.size();c++) {
+                if (!messageUsed) {
+                    buttonMessage.set(c, m);
+                }
+            }*/
             if(!messageUsed) {
-                buttonMessage.add(m);
+                //buttonMessage.add(m);
+                messages.add(m);
             }
         }
+        int count = 0;
+        for(Message m: messages){
+            buttonMessage.add(count,m);
+            count++;
+        }
+
         if(buttonMessage.size()>0) {
             System.out.println(buttonMessage.get(0));
         }
