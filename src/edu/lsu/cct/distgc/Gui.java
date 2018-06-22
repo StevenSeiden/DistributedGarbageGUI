@@ -242,7 +242,6 @@ public class Gui {
     }
 
     static ArrayList<Message> buttonMessage = new ArrayList<>();
-    static java.util.List<Message> messages = new ArrayList<>();
 
 
 
@@ -258,6 +257,7 @@ public class Gui {
         for(int c = 0; c<buttonMessage.size();c++){
             buttonMessage.set(c,null);
         }
+        int count = 0;
         for(Message m : Message.msgs) {
 
             System.out.println(" >> BUTTON: "+m.msg_id+": "+m);
@@ -274,14 +274,8 @@ public class Gui {
                 }
             }*/
             if(!messageUsed) {
-                //buttonMessage.add(m);
-                messages.add(m);
+                buttonMessage.add(count, m);
             }
-        }
-        int count = 0;
-        for(Message m: messages){
-            buttonMessage.add(count,m);
-            count++;
         }
 
         if(buttonMessage.size()>0) {
