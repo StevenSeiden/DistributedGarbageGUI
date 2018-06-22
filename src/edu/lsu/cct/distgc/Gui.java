@@ -357,7 +357,12 @@ public class Gui {
                         buttons[i].setText("Button #"+i);
                     } else {
                         String s = m.toString();
-                        buttons[i].setText(s);
+                        int index = s.indexOf("(");
+                        if(index != -1) {
+                            buttons[i].setText(s.substring(0, index));
+                        }else{
+                            buttons[i].setText(s);
+                        }
                     }
                 }
 
