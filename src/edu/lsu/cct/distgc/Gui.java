@@ -252,13 +252,15 @@ public class Gui {
 
 
     static void getButtonText() {
-        //MessagesOvertake mo = (MessagesOvertake)Message.msgs;
+        //MessagesOvertake mo = (MessagesOvertake)Message.msgsz
         System.out.println("BUTTONS START");
         for(int c = 0; c<buttonMessage.size();c++){
             buttonMessage.set(c,null);
         }
         int count = 0;
         for(Message m : Message.msgs) {
+            if(m.done())
+                continue;
 
             System.out.println(" >> BUTTON: "+m.msg_id+": "+m);
             boolean messageUsed = false;
@@ -268,6 +270,7 @@ public class Gui {
                 }
             }
 
+            /*for(int c = 0; c<buttonMessage.size();c++) {
             /*for(int c = 0; c<buttonMessage.size();c++) {
                 if (!messageUsed) {
                     buttonMessage.set(c, m);
