@@ -300,6 +300,7 @@ public class Gui {
 
         for(int i=0; i<buttons.length; i++) {
             buttons[i] = new JButton("Button #"+i);
+            buttons[i].setEnabled(false);
         }
 
         getButtonText();
@@ -357,8 +358,10 @@ public class Gui {
                 for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
                     Message m = buttonMessage.get(i);
                     if(m == null) {
+                        buttons[i].setEnabled(false);
                         buttons[i].setText("Button #"+i);
                     } else {
+                        buttons[i].setEnabled(true);
                         String s = m.toString();
                         int index = s.indexOf("(");
                         if(index != -1) {
