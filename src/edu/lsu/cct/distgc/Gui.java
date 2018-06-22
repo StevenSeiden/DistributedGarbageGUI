@@ -260,6 +260,7 @@ public class Gui {
         }
         for(Message m : Message.msgs) {
 
+            System.out.println(" >> BUTTON: "+m.msg_id+": "+m);
             boolean messageUsed = false;
             for(int c = 0; c<buttonMessage.size();c++){
                 if(m==buttonMessage.get(c)){
@@ -357,7 +358,13 @@ public class Gui {
                 }*/
 
                 for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
-                    buttons[i].setText(buttonMessage.get(i).toString());
+                    Message m = buttonMessage.get(i);
+                    if(m == null) {
+                        buttons[i].setText("Button #"+i);
+                    } else {
+                        String s = m.toString();
+                        buttons[i].setText(s);
+                    }
                 }
 
                 Dimension d = getSize();
