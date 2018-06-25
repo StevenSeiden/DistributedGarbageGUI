@@ -68,6 +68,22 @@ public class Gui {
         waitForMouse = false;
         Gui.class.notifyAll();
         //Message.waitForNoGui();
+        for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+            Message m = buttonMessage.get(i);
+            if(m == null || m.done()) {
+                buttons[i].setEnabled(false);
+                buttons[i].setText("Button #"+i);
+            } else {
+                buttons[i].setEnabled(true);
+                String s = m.toString();
+                int index = s.indexOf("(");
+                if(index != -1) {
+                    buttons[i].setText(s.substring(0, index));
+                }else{
+                    buttons[i].setText(s);
+                }
+            }
+        }
     }
 
     static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
@@ -324,7 +340,7 @@ public class Gui {
                 System.out.println("Paint called");
 
 
-                for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                /*for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
                     Message m = buttonMessage.get(i);
                     if(m == null || m.done()) {
                         buttons[i].setEnabled(false);
@@ -339,7 +355,7 @@ public class Gui {
                             buttons[i].setText(s);
                         }
                     }
-                }
+                }*/
 
                 Dimension d = getSize();
                 g.setColor(Color.white);
