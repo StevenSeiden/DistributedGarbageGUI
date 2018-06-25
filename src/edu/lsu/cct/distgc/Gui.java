@@ -38,7 +38,6 @@ public class Gui {
     }
 
     static NodePos getNodePos(int nodeId) {
-        // Fill in
         int nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
@@ -89,6 +88,7 @@ public class Gui {
     };
 
 
+    //Making a hashmap to associate colors with CIDs
     static HashMap<String, Integer> cidColor = new HashMap<String, Integer>();
 
     static int currentColor = 2;
@@ -113,25 +113,23 @@ public class Gui {
         if(mh.m != null)
             System.out.println("paintMe: mh.m="+mh.m);
 
-        /*int circleDiameter;
-        if (d.height > d.width) {
-            circleDiameter = (d.width) - 100;
-        } else {
-            circleDiameter = (d.height) - 100;
-        }*/
-
 
         // The big circle
         g.setColor(Color.black);
         g.drawOval(50, 50, circleDiameter, circleDiameter);
+        //The amount of nodes
         int nodeAmount = Node.nodeMap.size();
+
+        //The angle between each node
         double angleSeparating = (2 * Math.PI / nodeAmount);
         if (mh.m != null) {
             g.setFont(new Font("default", Font.BOLD, 20));
             String m = mh.m.toString();
             int pos = m.indexOf('(');
-            if(pos > 0)
-                m = m.substring(0,pos);
+            //Removing extraneous information from buttons
+            if(pos > 0) {
+                m = m.substring(0, pos);
+            }
             g.drawString(m, 0, 25);
         }
         int n = 0;
@@ -142,7 +140,6 @@ public class Gui {
                 NodePos np = getNodePos(node.id);
                 int nodeX = np.x - nodeDiameter/2;
                 int nodeY = np.y - nodeDiameter/2;
-                //g.setColor(nodeColor[cidColor.get(key)]);
 
                 String key = "blank";
                 if (node.cd != null && node.cd.getCid() != null) {
@@ -168,33 +165,34 @@ public class Gui {
                     }
                 }
 
-
+                //Adding marker for root node
                 if(rootNode){
                     g.fillOval((nodeX-4), (nodeY-4), nodeDiameter+8, nodeDiameter+8);
                 }
-
+                //Retrieving node color and drawing node
                 int color = cidColor.get(key);
                 g.setColor(nodeColor[color]);
                 g.fillOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
+                //Adding black border to node
                 g.setColor(Color.black);
-
                 g.drawOval(nodeX, nodeY, nodeDiameter, nodeDiameter);
 
+                //Setting default label values
                 int pc = 0;
                 int rcc = 0;
                 int wc = 0;
+                //Setting values from node if applicable
                 if (node.cd != null) {
                     pc = node.cd.phantom_count;
                     rcc = node.cd.rcc;
                     wc = node.cd.wait_count;
                 }
 
+                //Labeling nodes
                 g.setFont(new Font("default", Font.BOLD, 16));
-
                 g.drawString("id=" + node.id, nodeX + 27, nodeY + 30);
 
                 g.setFont(new Font("default", Font.BOLD, 12));
-
                 if(node.cd != null) {
                     g.drawString(node.cd.getCid().toString() + " " + node.cd.state, nodeX + 2, nodeY + 55);
                 }
@@ -203,21 +201,17 @@ public class Gui {
                 g.drawString("[" + node.strong_count + "," + node.weak_count + "," + pc + "," + rcc + "]", nodeX + 15, nodeY + 75);
                 g.drawString("(" + node.weight + "/" + node.max_weight + ") " + wc, nodeX + 23, nodeY + 90);
 
-
+                //Adding arrows
                 for (Integer out : makeCopy(node.edges)) {
                     if (out != null) {
                         Node child = Node.nodeMap.get(out);
-
-                        //System.out.println("cid="+key);
-                        //System.out.println(nodeColor[currentColor]);
-
-
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
                         nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh, baseOffset, Color.black);
                     }
                 }
+
                 if(node.cd != null && node.cd.parent > 0) {
                     nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3, Color.blue);
                 }
@@ -241,41 +235,31 @@ public class Gui {
         paintMe(d, image.getGraphics(), mh);
     }
 
+    //Array of messages
     static ArrayList<Message> buttonMessage = new ArrayList<>();
-
-
 
     static JButton[] buttons = new JButton[15];
 
-
-
-
-
+    //Getting the message for each button
     static void getButtonText() {
-        //MessagesOvertake mo = (MessagesOvertake)Message.msgsz
         System.out.println("BUTTONS START");
+        //Clearing out the buttonMessage array
         for(int c = 0; c<buttonMessage.size();c++){
             buttonMessage.set(c,null);
         }
         int count = 0;
         for(Message m : Message.msgs) {
-            if(m.done())
+            if(m.done()) {
                 continue;
-
+            }
             System.out.println(" >> BUTTON: "+m.msg_id+": "+m);
             boolean messageUsed = false;
+            //Checking to see if a message has already been added
             for(int c = 0; c<buttonMessage.size();c++){
                 if(m==buttonMessage.get(c)){
                     messageUsed = true;
                 }
             }
-
-            /*for(int c = 0; c<buttonMessage.size();c++) {
-            /*for(int c = 0; c<buttonMessage.size();c++) {
-                if (!messageUsed) {
-                    buttonMessage.set(c, m);
-                }
-            }*/
             if(!messageUsed) {
                 buttonMessage.add(count, m);
             }
@@ -297,7 +281,7 @@ public class Gui {
         Container c = jf.getContentPane();
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
-
+        //Creating buttons and disabling them
         for(int i=0; i<buttons.length; i++) {
             buttons[i] = new JButton("Button #"+i);
             buttons[i].setEnabled(false);
@@ -323,6 +307,7 @@ public class Gui {
 
         for(final int[] i = {0}; i[0]<buttons.length; i[0]++) {
             int ii = i[0];
+            //Taking action when a button is pressed
             buttons[i[0]].addActionListener(a -> {
                 System.out.println("Button pressed!");
                 Message.setGuiMessage(buttonMessage.get(ii));
@@ -339,25 +324,9 @@ public class Gui {
                 System.out.println("Paint called");
 
 
-                /*for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
-                    boolean duplicateButton;›
-
-                    for(int j=0; j < buttonMessage.size() && j < buttons.length; j++){
-                        if(buttons[j].getText() == buttonMessage.get(i)){
-                            duplicateButton = false;
-                        }else{
-                            duplicateButton = true;
-                        }
-                    }
-                    if(!duplicateButton) {
-                        buttons[i].setText(buttonMessage.get(i).toString());
-                    }
-
-                }*/
-
                 for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
                     Message m = buttonMessage.get(i);
-                    if(m == null) {
+                    if(m == null || m.done()) {
                         buttons[i].setEnabled(false);
                         buttons[i].setText("Button #"+i);
                     } else {
@@ -396,8 +365,6 @@ public class Gui {
 
         Message.addListener(new MessageListener() {
             boolean ready = false;
-            //Scanner sc = new Scanner(System.in);
-            //
 
             @Override
             public void before(Message m,int step) {
@@ -461,6 +428,7 @@ public class Gui {
                 };
                 new Thread(r).start();
                 arrowColor = nodeColor[8];
+
             }
 
             @Override
@@ -482,6 +450,7 @@ public class Gui {
         int x1, y1, x2, y2;
     }
 
+    //Rotate arrows using rotate()
     static void rotate(Rotate r, double theta) {
         double d = Math.sqrt(((r.x2 - r.x1) * (r.x2 - r.x1)) + ((r.y2 - r.y1) * (r.y2 - r.y1)));
         double alpha = Math.atan2(r.y2 - r.y1, r.x2 - r.x1);
@@ -497,23 +466,16 @@ public class Gui {
 
         NodePos np1 = getNodePos(startNode);
 
-        int x1 = np1.x; //nodeX+60;//(int) (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
-        int y1 = np1.y;//(int) (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (startNode-1))) + 50) + circleDiameter / 2);
+        int x1 = np1.x;
+        int y1 = np1.y;
 
 
         NodePos np2 = getNodePos(endNode);
 
-        int x2 = np2.x;// (((((circleDiameter / 2)-30) * (double) Math.cos(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
-        int y2 = np2.y;// (((((circleDiameter / 2)-30) * (double) Math.sin(angleSeparating * (endNode-1))) + 50) + circleDiameter / 2);
+        int x2 = np2.x;
+        int y2 = np2.y;
 
 
-        /*
-        if((mh.m.sender == startNode) && (mh.m.recipient == endNode) && offset <= baseOffset ){
-            g.setColor(arrowColor);
-        }else{
-            g.setColor(Color.black);
-        }
-        */
         if(color != null)
             g.setColor(color);
 
