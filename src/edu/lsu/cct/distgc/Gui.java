@@ -68,6 +68,7 @@ public class Gui {
         waitForMouse = false;
         Gui.class.notifyAll();
         //Message.waitForNoGui();
+        getButtonText();
         for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
             Message m = buttonMessage.get(i);
             if(m == null || m.done()) {
@@ -278,6 +279,7 @@ public class Gui {
             }
             if(!messageUsed) {
                 buttonMessage.add(count, m);
+                count++;
             }
         }
 
@@ -327,7 +329,7 @@ public class Gui {
             buttons[i[0]].addActionListener(a -> {
                 System.out.println("Button pressed!");
                 Message.setGuiMessage(buttonMessage.get(ii));
-                getButtonText();
+                mouseIsClicked();
             });
         }
 

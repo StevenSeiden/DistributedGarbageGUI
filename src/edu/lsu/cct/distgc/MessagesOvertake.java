@@ -27,7 +27,9 @@ public class MessagesOvertake implements MessageQueue {
             }
             return list.iterator();
         } else {
-            return msgs.iterator();
+            List<Message> list = new ArrayList<>();
+            list.addAll(msgs);
+            return list.iterator();
         }
     }
 
