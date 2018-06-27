@@ -69,6 +69,7 @@ public class Gui {
         Gui.class.notifyAll();
         //Message.waitForNoGui();
         getButtonText();
+
         for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
             Message m = buttonMessage.get(i);
             if(m == null || m.done()) {
@@ -308,10 +309,15 @@ public class Gui {
         getButtonText();
 
 
-        GridLayout layout = new GridLayout(15, 1);
+        GridLayout layout = new GridLayout(17, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
 
+        JButton addNode = new JButton("Add node");
+        buttonPanel.add(addNode);
+
+        JButton addEdge = new JButton("Add edge");
+        buttonPanel.add(addEdge);
 
         for(int i=0; i<buttons.length; i++) {
             buttonPanel.add(buttons[i]);
@@ -333,6 +339,19 @@ public class Gui {
             });
         }
 
+        addNode.addActionListener(a ->{
+            new Node();
+        });
+
+        addEdge.addActionListener(a ->{
+            jf.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent me) {
+                    System.out.println("The mouse is currently positioned at:");
+                    System.out.println(MouseInfo.getPointerInfo().getLocation());
+                }
+            });
+        });
 
 
 
@@ -387,30 +406,30 @@ public class Gui {
             @Override
             public void before(Message m,int step) {
                 Runnable r = ()->{
-                mh.m = m;
-                mh.step = step;
-                mh.phase = 1;
-                System.out.println("m="+m+" "+Node.nodeMap.size());
+                    mh.m = m;
+                    mh.step = step;
+                    mh.phase = 1;
+                    System.out.println("m="+m+" "+Node.nodeMap.size());
 
-                paintMe(mh);
-                Thread.yield();
-                jf.getContentPane().requestFocus();
-                SwingUtilities.invokeLater( ()->{
-                    jf.getContentPane().repaint();
-                });
-                waitForMouse();
-                getButtonText();
-                SwingUtilities.invokeLater( ()->{
-                    jf.getContentPane().repaint();
-                });
-                ready = true;
-                File file = new File(String.format("frame-%d-1.png", step));
-                System.out.println(" FILE: "+file);
-                try {
-                    ImageIO.write((BufferedImage)image,"png",file);
-                } catch(Exception e) {
-                    e.printStackTrace(); System.exit(0);
-                }
+                    paintMe(mh);
+                    Thread.yield();
+                    jf.getContentPane().requestFocus();
+                    SwingUtilities.invokeLater( ()->{
+                        jf.getContentPane().repaint();
+                    });
+                    waitForMouse();
+                    getButtonText();
+                    SwingUtilities.invokeLater( ()->{
+                        jf.getContentPane().repaint();
+                    });
+                    ready = true;
+                    File file = new File(String.format("frame-%d-1.png", step));
+                    System.out.println(" FILE: "+file);
+                    try {
+                        ImageIO.write((BufferedImage)image,"png",file);
+                    } catch(Exception e) {
+                        e.printStackTrace(); System.exit(0);
+                    }
                 };
                 new Thread(r).start();
 
@@ -420,29 +439,29 @@ public class Gui {
             @Override
             public void after(Message m,int step) {
                 Runnable r = ()->{
-                mh.m = m;
-                mh.step = step;
-                mh.phase = 2;
-                System.out.println("m="+m+" "+Node.nodeMap.size());
+                    mh.m = m;
+                    mh.step = step;
+                    mh.phase = 2;
+                    System.out.println("m="+m+" "+Node.nodeMap.size());
 
-                paintMe(mh);
-                Thread.yield();
-                jf.getContentPane().requestFocus();
-                SwingUtilities.invokeLater( ()->{
-                    jf.getContentPane().repaint();
-                });
-                waitForMouse();
-                SwingUtilities.invokeLater( ()->{
-                    jf.getContentPane().repaint();
-                });
-                File file = new File(String.format("frame-%d-2.png", step));
-                System.out.println(" FILE: "+file);
-                try {
-                    ImageIO.write((BufferedImage)image,"png",file);
-                } catch(Exception e) {
-                    e.printStackTrace(); System.exit(0);
-                }
-                ready = true;
+                    paintMe(mh);
+                    Thread.yield();
+                    jf.getContentPane().requestFocus();
+                    SwingUtilities.invokeLater( ()->{
+                        jf.getContentPane().repaint();
+                    });
+                    waitForMouse();
+                    SwingUtilities.invokeLater( ()->{
+                        jf.getContentPane().repaint();
+                    });
+                    File file = new File(String.format("frame-%d-2.png", step));
+                    System.out.println(" FILE: "+file);
+                    try {
+                        ImageIO.write((BufferedImage)image,"png",file);
+                    } catch(Exception e) {
+                        e.printStackTrace(); System.exit(0);
+                    }
+                    ready = true;
                 };
                 new Thread(r).start();
                 arrowColor = nodeColor[8];
