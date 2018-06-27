@@ -20,6 +20,7 @@ public class Gui {
     public final static int nodeDiameter = 100;
     public static Color arrowColor;
     public static int baseOffset = 5;
+    public static int nodeAmount;
 
     static class NodePos {
         int x, y; // the position
@@ -38,7 +39,7 @@ public class Gui {
     }
 
     static NodePos getNodePos(int nodeId) {
-        int nodeAmount = Node.nodeMap.size();
+        nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
         np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
@@ -349,6 +350,16 @@ public class Gui {
                 public void mouseClicked(MouseEvent me) {
                     System.out.println("The mouse is currently positioned at:");
                     System.out.println(MouseInfo.getPointerInfo().getLocation());
+                    for(int i = 0; i<nodeAmount; i++){
+                        NodePos np = getNodePos(i);
+                        System.out.println("Pizza");
+                        System.out.println(np.x+(nodeDiameter/2));
+                        System.out.println(np.y+(nodeDiameter/2));
+
+
+                        System.out.println("Spaghet");
+                    }
+
                 }
             });
         });
