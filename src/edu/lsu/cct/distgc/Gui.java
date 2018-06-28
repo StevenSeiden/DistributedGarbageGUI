@@ -360,8 +360,10 @@ public class Gui {
 
                         double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
 
-                        if(mouseDist>=nodeDiameter){
+                        if(mouseDist<=nodeDiameter){
                             System.out.println("You clicked on node #" + i);
+                        }else{
+                            System.out.println("Node #"+i+" wasn't clicked.");
                         }
 
 
