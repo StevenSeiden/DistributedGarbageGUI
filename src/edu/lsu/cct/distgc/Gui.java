@@ -350,11 +350,21 @@ public class Gui {
                 public void mouseClicked(MouseEvent me) {
                     System.out.println("The mouse is currently positioned at:");
                     System.out.println(MouseInfo.getPointerInfo().getLocation());
+
+                    int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                    int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
                     for(int i = 0; i<nodeAmount; i++){
                         NodePos np = getNodePos(i);
                         System.out.println("Pizza");
-                        System.out.println(np.x+(nodeDiameter/2));
-                        System.out.println(np.y+(nodeDiameter/2));
+                        int nodeCenterX = (np.x+(nodeDiameter/2));
+                        int nodeCenterY = (np.y+(nodeDiameter/2));
+
+                        double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
+
+                        if(mouseDist>=nodeDiameter){
+                            System.out.println("You clicked on node #" + i);
+                        }
+
 
 
                         System.out.println("Spaghet");
