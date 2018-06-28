@@ -355,7 +355,6 @@ public class Gui {
                     int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
                     for(int i = 0; i<nodeAmount; i++){
                         NodePos np = getNodePos(i);
-                        System.out.println("Pizza");
                         int nodeCenterX = (np.x+(nodeDiameter/2));
                         int nodeCenterY = (np.y+(nodeDiameter/2));
 
@@ -366,8 +365,6 @@ public class Gui {
                         }
 
 
-
-                        System.out.println("Spaghet");
                     }
 
                 }
