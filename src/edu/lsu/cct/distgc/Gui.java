@@ -291,6 +291,8 @@ public class Gui {
         System.out.println("BUTTONS END");
 
     }
+    static int newEdgeStart;
+    static int newEdgeEnd;
 
     static JFrame jf;
     public static void main(String[] args) throws Exception {
@@ -348,6 +350,7 @@ public class Gui {
             jf.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent me) {
+                    System.out.println("Starting a new edge");
                     System.out.println("The mouse is currently positioned at:");
                     System.out.println(MouseInfo.getPointerInfo().getLocation());
 
@@ -361,16 +364,68 @@ public class Gui {
                         double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
 
                         if(mouseDist<=nodeDiameter){
-                            System.out.println("You clicked on node #" + i);
+                            if(i==0) {
+                                System.out.println("Your first node is node #" + nodeAmount);
+                                newEdgeStart = nodeAmount;
+                            }else{
+                                System.out.println("Your first node is node #" + i);
+                                newEdgeStart = i;
+                            }
                         }else{
-                            System.out.println("Node #"+i+" wasn't clicked.");
+                            if(i==0) {
+                                System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                            }else{
+                                System.out.println("Node #" + i + " wasn't clicked.");
+                            }
                         }
-
 
                     }
 
+
+
+                    jf.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent me) {
+                            System.out.println("Starting a new edge");
+                            System.out.println("The mouse is currently positioned at:");
+                            System.out.println(MouseInfo.getPointerInfo().getLocation());
+
+                            int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                            int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                            for(int i = 0; i<nodeAmount; i++){
+                                NodePos np = getNodePos(i);
+                                int nodeCenterX = (np.x+(nodeDiameter/2));
+                                int nodeCenterY = (np.y+(nodeDiameter/2));
+
+                                double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
+
+                                if(mouseDist<=nodeDiameter){
+                                    if(i==0) {
+                                        System.out.println("Your second node is node #" + nodeAmount);
+                                        newEdgeEnd = nodeAmount;
+                                    }else{
+                                        System.out.println("Your second node is node #" + i);
+                                        newEdgeEnd = i;
+                                    }
+                                }else{
+                                    if(i==0) {
+                                        System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                                    }else{
+                                        System.out.println("Node #" + i + " wasn't clicked.");
+                                    }
+                                }
+
+
+                                System.out.println("You are making an edge from node #"+newEdgeStart+"to edge #"+newEdgeEnd+".");
+                            }
+                        }
+
+                    });
+
                 }
+
             });
+
         });
 
 
