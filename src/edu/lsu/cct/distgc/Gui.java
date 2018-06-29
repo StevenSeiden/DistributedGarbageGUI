@@ -21,6 +21,7 @@ public class Gui {
     public static Color arrowColor;
     public static int baseOffset = 5;
     public static int nodeAmount;
+    public static boolean creatingEdge = false;
 
     static class NodePos {
         int x, y; // the position
@@ -299,6 +300,7 @@ public class Gui {
     static int newEdgeStart;
     static int newEdgeEnd;
 
+
     static JFrame jf;
 
     public static void main(String[] args) throws Exception {
@@ -353,90 +355,25 @@ public class Gui {
         });
 
         addEdge.addActionListener(a -> {
+            creatingEdge = true;
+        });
+
+
+
+
+
+        if(creatingEdge){
             jf.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent me) {
 
-                    if(newEdgeStart==0) {
-                        System.out.println("Starting a new edge");
-                        System.out.println("The mouse is currently positioned at:");
-                        System.out.println(MouseInfo.getPointerInfo().getLocation());
-
-                        int mouseX = me.getX(); //(int) MouseInfo.getPointerInfo().getLocation().getX();
-                        int mouseY = me.getY(); //(int) MouseInfo.getPointerInfo().getLocation().getY();
-                        for (int i = 0; i < nodeAmount; i++) {
-                            NodePos np = getNodePos(i);
-                            int nodeCenterX = (np.x + (nodeDiameter / 2));
-                            int nodeCenterY = (np.y + (nodeDiameter / 2));
-
-                            double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
-                            System.out.println("mouseDist="+mouseDist+" to node "+i);
-
-                            if (mouseDist <= nodeDiameter) {
-                                if (i == 0) {
-                                    System.out.println("Your first node is node #" + nodeAmount);
-                                    newEdgeStart = nodeAmount;
-                                } else {
-                                    System.out.println("Your first node is node #" + i);
-                                    newEdgeStart = i;
-                                }
-                            } else {
-                                if (i == 0) {
-                                    System.out.println("Node #" + nodeAmount + " wasn't clicked.");
-                                } else {
-                                    System.out.println("Node #" + i + " wasn't clicked.");
-                                }
-                            }
-
-                        }
-                    }
-
-
-                    jf.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent me) {
-                            System.out.println("Starting a new edge");
-                            System.out.println("The mouse is currently positioned at:");
-                            System.out.println(MouseInfo.getPointerInfo().getLocation());
-
-                            int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                            int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
-                            for (int i = 0; i < nodeAmount; i++) {
-                                NodePos np = getNodePos(i);
-                                int nodeCenterX = (np.x + (nodeDiameter / 2));
-                                int nodeCenterY = (np.y + (nodeDiameter / 2));
-
-                                double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
-                                System.out.println("mouseDist="+mouseDist+" to node "+i);
-
-                                if (mouseDist <= nodeDiameter) {
-                                    if (i == 0) {
-                                        System.out.println("Your second node is node #" + nodeAmount);
-                                        newEdgeEnd = nodeAmount;
-                                    } else {
-                                        System.out.println("Your second node is node #" + i);
-                                        newEdgeEnd = i;
-                                    }
-                                } else {
-                                    if (i == 0) {
-                                        System.out.println("Node #" + nodeAmount + " wasn't clicked.");
-                                    } else {
-                                        System.out.println("Node #" + i + " wasn't clicked.");
-                                    }
-                                }
-                            }
-                            System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
-                            newEdgeStart = 0;
-                            newEdgeEnd = 0;
-                        }
-
-                    });
+                    makeEdge(me);
 
                 }
 
             });
+        }
 
-        });
 
 
         jf.add(jcomp = new Container() {
@@ -567,6 +504,83 @@ public class Gui {
         //System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
+    }
+
+
+    public static void makeEdge(MouseEvent me){
+        if(newEdgeStart==0) {
+            System.out.println("Starting a new edge");
+            System.out.println("The mouse is currently positioned at:");
+            System.out.println(MouseInfo.getPointerInfo().getLocation());
+
+            int mouseX = me.getX();
+            int mouseY = me.getY();
+            for (int i = 0; i < nodeAmount; i++) {
+                NodePos np = getNodePos(i);
+                int nodeCenterX = (np.x + (nodeDiameter / 2));
+                int nodeCenterY = (np.y + (nodeDiameter / 2));
+
+                double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+
+                if (mouseDist <= nodeDiameter) {
+                    if (i == 0) {
+                        System.out.println("Your first node is node #" + nodeAmount);
+                        newEdgeStart = nodeAmount;
+                    } else {
+                        System.out.println("Your first node is node #" + i);
+                        newEdgeStart = i;
+                    }
+                } else {
+                    if (i == 0) {
+                        System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                    } else {
+                        System.out.println("Node #" + i + " wasn't clicked.");
+                    }
+                }
+
+            }
+        }
+
+
+        jf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                System.out.println("Starting a new edge");
+                System.out.println("The mouse is currently positioned at:");
+                System.out.println(MouseInfo.getPointerInfo().getLocation());
+
+                int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                for (int i = 0; i < nodeAmount; i++) {
+                    NodePos np = getNodePos(i);
+                    int nodeCenterX = (np.x + (nodeDiameter / 2));
+                    int nodeCenterY = (np.y + (nodeDiameter / 2));
+
+                    double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+
+                    if (mouseDist <= nodeDiameter) {
+                        if (i == 0) {
+                            System.out.println("Your second node is node #" + nodeAmount);
+                            newEdgeEnd = nodeAmount;
+                        } else {
+                            System.out.println("Your second node is node #" + i);
+                            newEdgeEnd = i;
+                        }
+                    } else {
+                        if (i == 0) {
+                            System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                        } else {
+                            System.out.println("Node #" + i + " wasn't clicked.");
+                        }
+                    }
+                }
+                System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
+                newEdgeStart = 0;
+                newEdgeEnd = 0;
+                creatingEdge = false;
+            }
+
+        });
     }
 
     static class Rotate {
