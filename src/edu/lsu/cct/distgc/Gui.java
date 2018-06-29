@@ -140,7 +140,7 @@ public class Gui {
         g.setColor(Color.black);
         g.drawOval(50, 50, circleDiameter, circleDiameter);
         //The amount of nodes
-        int nodeAmount = Node.nodeMap.size();
+        nodeAmount = Node.nodeMap.size();
 
         //The angle between each node
         double angleSeparating = (2 * Math.PI / nodeAmount);
@@ -362,14 +362,15 @@ public class Gui {
                         System.out.println("The mouse is currently positioned at:");
                         System.out.println(MouseInfo.getPointerInfo().getLocation());
 
-                        int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                        int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                        int mouseX = me.getX(); //(int) MouseInfo.getPointerInfo().getLocation().getX();
+                        int mouseY = me.getY(); //(int) MouseInfo.getPointerInfo().getLocation().getY();
                         for (int i = 0; i < nodeAmount; i++) {
                             NodePos np = getNodePos(i);
                             int nodeCenterX = (np.x + (nodeDiameter / 2));
                             int nodeCenterY = (np.y + (nodeDiameter / 2));
 
                             double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+                            System.out.println("mouseDist="+mouseDist+" to node "+i);
 
                             if (mouseDist <= nodeDiameter) {
                                 if (i == 0) {
@@ -406,6 +407,7 @@ public class Gui {
                                 int nodeCenterY = (np.y + (nodeDiameter / 2));
 
                                 double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+                                System.out.println("mouseDist="+mouseDist+" to node "+i);
 
                                 if (mouseDist <= nodeDiameter) {
                                     if (i == 0) {
