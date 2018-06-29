@@ -27,13 +27,13 @@ public class Gui {
     }
 
     static <T> ArrayList<T> makeCopy(Collection<T> col) {
-        while(true) {
+        while (true) {
             try {
                 ArrayList<T> li = new ArrayList<>();
-                if(col != null)
+                if (col != null)
                     li.addAll(col);
                 return li;
-            } catch(ConcurrentModificationException e) {
+            } catch (ConcurrentModificationException e) {
             }
         }
     }
@@ -42,9 +42,9 @@ public class Gui {
         nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
-        np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating*nodeId)) + (circleDiameter/2));
+        np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * nodeId)) + (circleDiameter / 2));
 
-        np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating*nodeId)) + (circleDiameter/2));
+        np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * nodeId)) + (circleDiameter / 2));
         np.x += nodeDiameter / 2;
         np.y += nodeDiameter / 2;
         return np;
@@ -57,14 +57,17 @@ public class Gui {
     }
 
     static boolean waitForMouse = true;
+
     synchronized static void waitForMouse() {
-        while(waitForMouse) {
+        while (waitForMouse) {
             try {
                 Gui.class.wait();
-            } catch(InterruptedException ie) {}
+            } catch (InterruptedException ie) {
+            }
         }
         waitForMouse = true;
     }
+
     synchronized static void mouseIsClicked() {
         waitForMouse = false;
         Gui.class.notifyAll();
@@ -73,16 +76,16 @@ public class Gui {
 
         for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
             Message m = buttonMessage.get(i);
-            if(m == null || m.done()) {
+            if (m == null || m.done()) {
                 buttons[i].setEnabled(false);
-                buttons[i].setText("Button #"+i);
+                buttons[i].setText("Button #" + i);
             } else {
                 buttons[i].setEnabled(true);
                 String s = m.toString();
                 int index = s.indexOf("(");
-                if(index != -1) {
+                if (index != -1) {
                     buttons[i].setText(s.substring(0, index));
-                }else{
+                } else {
                     buttons[i].setText(s);
                 }
             }
@@ -111,26 +114,26 @@ public class Gui {
     static HashMap<String, Integer> cidColor = new HashMap<String, Integer>();
 
     static int currentColor = 2;
-    static {
-        cidColor.put("blank",0);
-        cidColor.put("dead",1);
-    }
 
+    static {
+        cidColor.put("blank", 0);
+        cidColor.put("dead", 1);
+    }
 
 
     static int circleDiameter = 500;
 
     static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
         g.setColor(Color.white);
-        g.fillRect(0,0,d.width,d.height);
+        g.fillRect(0, 0, d.width, d.height);
 
         AffineTransform af = new AffineTransform();
-        af.translate(50,0);
-        Graphics2D g2 = (Graphics2D)g;
+        af.translate(50, 0);
+        Graphics2D g2 = (Graphics2D) g;
         g2.setTransform(af);
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if(mh.m != null)
-            System.out.println("paintMe: mh.m="+mh.m);
+        if (mh.m != null)
+            System.out.println("paintMe: mh.m=" + mh.m);
 
 
         // The big circle
@@ -146,7 +149,7 @@ public class Gui {
             String m = mh.m.toString();
             int pos = m.indexOf('(');
             //Removing extraneous information from buttons
-            if(pos > 0) {
+            if (pos > 0) {
                 m = m.substring(0, pos);
             }
             g.drawString(m, 0, 25);
@@ -157,36 +160,36 @@ public class Gui {
             for (Node node : makeCopy(Node.nodeMap.values())) {
                 n = node.id;
                 NodePos np = getNodePos(node.id);
-                int nodeX = np.x - nodeDiameter/2;
-                int nodeY = np.y - nodeDiameter/2;
+                int nodeX = np.x - nodeDiameter / 2;
+                int nodeY = np.y - nodeDiameter / 2;
 
                 String key = "blank";
                 if (node.cd != null && node.cd.getCid() != null) {
                     key = node.cd.getCid().toString();
                 }
-                if(node.cd != null && node.cd.state == CollectorState.dead_state) {
+                if (node.cd != null && node.cd.state == CollectorState.dead_state) {
                     key = "dead";
                 }
 
                 if (!cidColor.containsKey(key)) {
                     cidColor.put(key, currentColor);
-                    System.out.println("COLOR: "+key+" => "+currentColor);
+                    System.out.println("COLOR: " + key + " => " + currentColor);
                     currentColor++;
                 }
                 g.setColor(Color.black);
 
                 boolean rootNode = false;
 
-                for(Root r : makeCopy(Root.roots)) {
+                for (Root r : makeCopy(Root.roots)) {
                     Node nn = r.get();
-                    if(nn != null && r.getId() == node.id){
+                    if (nn != null && r.getId() == node.id) {
                         rootNode = true;
                     }
                 }
 
                 //Adding marker for root node
-                if(rootNode){
-                    g.fillOval((nodeX-4), (nodeY-4), nodeDiameter+8, nodeDiameter+8);
+                if (rootNode) {
+                    g.fillOval((nodeX - 4), (nodeY - 4), nodeDiameter + 8, nodeDiameter + 8);
                 }
                 //Retrieving node color and drawing node
                 int color = cidColor.get(key);
@@ -212,7 +215,7 @@ public class Gui {
                 g.drawString("id=" + node.id, nodeX + 27, nodeY + 30);
 
                 g.setFont(new Font("default", Font.BOLD, 12));
-                if(node.cd != null) {
+                if (node.cd != null) {
                     g.drawString(node.cd.getCid().toString() + " " + node.cd.state, nodeX + 2, nodeY + 55);
                 }
                 g.setFont(new Font("default", Font.BOLD, 14));
@@ -227,17 +230,17 @@ public class Gui {
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
-                        nodeArrow(angleSeparating, startNode, endNode,nodeX, nodeY, g, mh, baseOffset, Color.black);
+                        nodeArrow(angleSeparating, startNode, endNode, nodeX, nodeY, g, mh, baseOffset, Color.black);
                     }
                 }
 
-                if(node.cd != null && node.cd.parent > 0) {
-                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset*3, Color.blue);
+                if (node.cd != null && node.cd.parent > 0) {
+                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset * 3, Color.blue);
                 }
             }
-            if(mh.m != null) {
-                if(mh.m.sender != 0) {
-                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset*3, arrowColor);
+            if (mh.m != null) {
+                if (mh.m.sender != 0) {
+                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset * 3, arrowColor);
                 }
             }
         } catch (Exception e) {
@@ -248,6 +251,7 @@ public class Gui {
 
     static volatile Image image;
     static Container jcomp;
+
     public static void paintMe(MessageHolder mh) {
         Dimension d = jcomp.getSize();
         image = jcomp.createImage(d.width, d.height);
@@ -263,38 +267,40 @@ public class Gui {
     static void getButtonText() {
         System.out.println("BUTTONS START");
         //Clearing out the buttonMessage array
-        for(int c = 0; c<buttonMessage.size();c++){
-            buttonMessage.set(c,null);
+        for (int c = 0; c < buttonMessage.size(); c++) {
+            buttonMessage.set(c, null);
         }
         int count = 0;
-        for(Message m : Message.msgs) {
-            if(m.done()) {
+        for (Message m : Message.msgs) {
+            if (m.done()) {
                 continue;
             }
-            System.out.println(" >> BUTTON: "+m.msg_id+": "+m);
+            System.out.println(" >> BUTTON: " + m.msg_id + ": " + m);
             boolean messageUsed = false;
             //Checking to see if a message has already been added
-            for(int c = 0; c<buttonMessage.size();c++){
-                if(m==buttonMessage.get(c)){
+            for (int c = 0; c < buttonMessage.size(); c++) {
+                if (m == buttonMessage.get(c)) {
                     messageUsed = true;
                 }
             }
-            if(!messageUsed) {
+            if (!messageUsed) {
                 buttonMessage.add(count, m);
                 count++;
             }
         }
 
-        if(buttonMessage.size()>0) {
+        if (buttonMessage.size() > 0) {
             System.out.println(buttonMessage.get(0));
         }
         System.out.println("BUTTONS END");
 
     }
+
     static int newEdgeStart;
     static int newEdgeEnd;
 
     static JFrame jf;
+
     public static void main(String[] args) throws Exception {
         jf = new JFrame("Distributed GC GUI");
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -304,8 +310,8 @@ public class Gui {
         c.setPreferredSize(new Dimension(800, 600));
         final MessageHolder mh = new MessageHolder();
         //Creating buttons and disabling them
-        for(int i=0; i<buttons.length; i++) {
-            buttons[i] = new JButton("Button #"+i);
+        for (int i = 0; i < buttons.length; i++) {
+            buttons[i] = new JButton("Button #" + i);
             buttons[i].setEnabled(false);
         }
 
@@ -322,7 +328,7 @@ public class Gui {
         JButton addEdge = new JButton("Add edge");
         buttonPanel.add(addEdge);
 
-        for(int i=0; i<buttons.length; i++) {
+        for (int i = 0; i < buttons.length; i++) {
             buttonPanel.add(buttons[i]);
         }
 
@@ -332,7 +338,7 @@ public class Gui {
         buttonPanel.revalidate();
         buttonPanel.repaint();
 
-        for(final int[] i = {0}; i[0]<buttons.length; i[0]++) {
+        for (final int[] i = {0}; i[0] < buttons.length; i[0]++) {
             int ii = i[0];
             //Taking action when a button is pressed
             buttons[i[0]].addActionListener(a -> {
@@ -342,45 +348,47 @@ public class Gui {
             });
         }
 
-        addNode.addActionListener(a ->{
+        addNode.addActionListener(a -> {
             new Node();
         });
 
-        addEdge.addActionListener(a ->{
+        addEdge.addActionListener(a -> {
             jf.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent me) {
-                    System.out.println("Starting a new edge");
-                    System.out.println("The mouse is currently positioned at:");
-                    System.out.println(MouseInfo.getPointerInfo().getLocation());
 
-                    int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                    int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
-                    for(int i = 0; i<nodeAmount; i++){
-                        NodePos np = getNodePos(i);
-                        int nodeCenterX = (np.x+(nodeDiameter/2));
-                        int nodeCenterY = (np.y+(nodeDiameter/2));
+                    if(newEdgeStart==0) {
+                        System.out.println("Starting a new edge");
+                        System.out.println("The mouse is currently positioned at:");
+                        System.out.println(MouseInfo.getPointerInfo().getLocation());
 
-                        double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
+                        int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
+                        int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                        for (int i = 0; i < nodeAmount; i++) {
+                            NodePos np = getNodePos(i);
+                            int nodeCenterX = (np.x + (nodeDiameter / 2));
+                            int nodeCenterY = (np.y + (nodeDiameter / 2));
 
-                        if(mouseDist<=nodeDiameter){
-                            if(i==0) {
-                                System.out.println("Your first node is node #" + nodeAmount);
-                                newEdgeStart = nodeAmount;
-                            }else{
-                                System.out.println("Your first node is node #" + i);
-                                newEdgeStart = i;
+                            double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+
+                            if (mouseDist <= nodeDiameter) {
+                                if (i == 0) {
+                                    System.out.println("Your first node is node #" + nodeAmount);
+                                    newEdgeStart = nodeAmount;
+                                } else {
+                                    System.out.println("Your first node is node #" + i);
+                                    newEdgeStart = i;
+                                }
+                            } else {
+                                if (i == 0) {
+                                    System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                                } else {
+                                    System.out.println("Node #" + i + " wasn't clicked.");
+                                }
                             }
-                        }else{
-                            if(i==0) {
-                                System.out.println("Node #" + nodeAmount + " wasn't clicked.");
-                            }else{
-                                System.out.println("Node #" + i + " wasn't clicked.");
-                            }
+
                         }
-
                     }
-
 
 
                     jf.addMouseListener(new MouseAdapter() {
@@ -392,32 +400,32 @@ public class Gui {
 
                             int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
                             int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
-                            for(int i = 0; i<nodeAmount; i++){
+                            for (int i = 0; i < nodeAmount; i++) {
                                 NodePos np = getNodePos(i);
-                                int nodeCenterX = (np.x+(nodeDiameter/2));
-                                int nodeCenterY = (np.y+(nodeDiameter/2));
+                                int nodeCenterX = (np.x + (nodeDiameter / 2));
+                                int nodeCenterY = (np.y + (nodeDiameter / 2));
 
-                                double mouseDist = Math.hypot(nodeCenterX-mouseX,nodeCenterY-mouseY);
+                                double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
 
-                                if(mouseDist<=nodeDiameter){
-                                    if(i==0) {
+                                if (mouseDist <= nodeDiameter) {
+                                    if (i == 0) {
                                         System.out.println("Your second node is node #" + nodeAmount);
                                         newEdgeEnd = nodeAmount;
-                                    }else{
+                                    } else {
                                         System.out.println("Your second node is node #" + i);
                                         newEdgeEnd = i;
                                     }
-                                }else{
-                                    if(i==0) {
+                                } else {
+                                    if (i == 0) {
                                         System.out.println("Node #" + nodeAmount + " wasn't clicked.");
-                                    }else{
+                                    } else {
                                         System.out.println("Node #" + i + " wasn't clicked.");
                                     }
                                 }
-
-
-                                System.out.println("You are making an edge from node #"+newEdgeStart+"to edge #"+newEdgeEnd+".");
                             }
+                            System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
+                            newEdgeStart = 0;
+                            newEdgeEnd = 0;
                         }
 
                     });
@@ -427,7 +435,6 @@ public class Gui {
             });
 
         });
-
 
 
         jf.add(jcomp = new Container() {
@@ -455,7 +462,7 @@ public class Gui {
 
                 Dimension d = getSize();
                 g.setColor(Color.white);
-                g.fillRect(0,0,d.width,d.height);
+                g.fillRect(0, 0, d.width, d.height);
                 Image bi = createImage(d.width, d.height);
                 paintMe(d, bi.getGraphics(), mh);
                 g.drawImage(image, 0, 0, null);
@@ -479,31 +486,32 @@ public class Gui {
             boolean ready = false;
 
             @Override
-            public void before(Message m,int step) {
-                Runnable r = ()->{
+            public void before(Message m, int step) {
+                Runnable r = () -> {
                     mh.m = m;
                     mh.step = step;
                     mh.phase = 1;
-                    System.out.println("m="+m+" "+Node.nodeMap.size());
+                    System.out.println("m=" + m + " " + Node.nodeMap.size());
 
                     paintMe(mh);
                     Thread.yield();
                     jf.getContentPane().requestFocus();
-                    SwingUtilities.invokeLater( ()->{
+                    SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
                     waitForMouse();
                     getButtonText();
-                    SwingUtilities.invokeLater( ()->{
+                    SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
                     ready = true;
                     File file = new File(String.format("frame-%d-1.png", step));
-                    System.out.println(" FILE: "+file);
+                    System.out.println(" FILE: " + file);
                     try {
-                        ImageIO.write((BufferedImage)image,"png",file);
-                    } catch(Exception e) {
-                        e.printStackTrace(); System.exit(0);
+                        ImageIO.write((BufferedImage) image, "png", file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(0);
                     }
                 };
                 new Thread(r).start();
@@ -512,29 +520,30 @@ public class Gui {
             }
 
             @Override
-            public void after(Message m,int step) {
-                Runnable r = ()->{
+            public void after(Message m, int step) {
+                Runnable r = () -> {
                     mh.m = m;
                     mh.step = step;
                     mh.phase = 2;
-                    System.out.println("m="+m+" "+Node.nodeMap.size());
+                    System.out.println("m=" + m + " " + Node.nodeMap.size());
 
                     paintMe(mh);
                     Thread.yield();
                     jf.getContentPane().requestFocus();
-                    SwingUtilities.invokeLater( ()->{
+                    SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
                     waitForMouse();
-                    SwingUtilities.invokeLater( ()->{
+                    SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
                     File file = new File(String.format("frame-%d-2.png", step));
-                    System.out.println(" FILE: "+file);
+                    System.out.println(" FILE: " + file);
                     try {
-                        ImageIO.write((BufferedImage)image,"png",file);
-                    } catch(Exception e) {
-                        e.printStackTrace(); System.exit(0);
+                        ImageIO.write((BufferedImage) image, "png", file);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(0);
                     }
                     ready = true;
                 };
@@ -574,7 +583,7 @@ public class Gui {
     }
 
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh,int offset, Color color){
+    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh, int offset, Color color) {
 
         NodePos np1 = getNodePos(startNode);
 
@@ -588,14 +597,14 @@ public class Gui {
         int y2 = np2.y;
 
 
-        if(color != null)
+        if (color != null)
             g.setColor(color);
 
         double theta = Math.atan2(y2 - y1, x2 - x1);
         double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
-        double L = 10*2; // The length of the arrow head
-        double h = L/2;
-        double Radius = nodeDiameter/2+5;
+        double L = 10 * 2; // The length of the arrow head
+        double h = L / 2;
+        double Radius = nodeDiameter / 2 + 5;
         //double offset = 5;
 
 
