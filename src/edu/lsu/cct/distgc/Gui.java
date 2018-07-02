@@ -578,6 +578,14 @@ public class Gui {
                     }
                 }
                 System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
+
+                Adversary adv = new Adversary();
+
+                Node prev = Node.nodeMap.get(newEdgeStart);
+
+                prev.createEdge(newEdgeEnd,adv);
+
+
                 newEdgeStart = 0;
                 newEdgeEnd = 0;
                 creatingEdge = false;
