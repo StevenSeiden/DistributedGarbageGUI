@@ -359,22 +359,23 @@ public class Gui {
         });
 
 
-
-
-
         //if(creatingEdge){
-            jf.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent me) {
+        jf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if(creatingEdge)
+                    beginEdge(me);
 
-                    if(creatingEdge)
-                        makeEdge(me);
+            }
 
-                }
+            @Override
+            public void mouseReleased(MouseEvent me) {
+                if (creatingEdge)
+                    makeEdge(me);
+            }
 
-            });
+        });
         //}
-
 
 
         jf.add(jcomp = new Container() {
@@ -507,10 +508,8 @@ public class Gui {
         Main.main(new String[0]);
     }
 
-
-    public static void makeEdge(MouseEvent me){
-        System.out.println("Make Edge");
-        if(newEdgeStart==0) {
+    public static void beginEdge(MouseEvent me) {
+        if (newEdgeStart == 0) {
             System.out.println("Starting a new edge");
             System.out.println("The mouse is currently positioned at:");
             System.out.println(MouseInfo.getPointerInfo().getLocation());
@@ -542,7 +541,10 @@ public class Gui {
 
             }
         }
+    }
 
+    public static void makeEdge(MouseEvent me) {
+        System.out.println("Finishing edge");
 
         jf.addMouseListener(new MouseAdapter() {
             @Override
