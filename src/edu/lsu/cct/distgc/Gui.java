@@ -362,17 +362,18 @@ public class Gui {
 
 
 
-        if(creatingEdge){
+        //if(creatingEdge){
             jf.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent me) {
 
-                    makeEdge(me);
+                    if(creatingEdge)
+                        makeEdge(me);
 
                 }
 
             });
-        }
+        //}
 
 
 
@@ -500,7 +501,7 @@ public class Gui {
         });
 
         //System.setProperty("test", "cycle");
-        //System.setProperty("size", "2"); //How many nodes
+        //System.setProperty("size", "20"); //How many nodes
         //System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
@@ -508,6 +509,7 @@ public class Gui {
 
 
     public static void makeEdge(MouseEvent me){
+        System.out.println("Make Edge");
         if(newEdgeStart==0) {
             System.out.println("Starting a new edge");
             System.out.println("The mouse is currently positioned at:");
