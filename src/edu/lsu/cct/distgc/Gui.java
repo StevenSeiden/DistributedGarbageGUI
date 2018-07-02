@@ -362,7 +362,7 @@ public class Gui {
         //if(creatingEdge){
         jf.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent me) {
+            public void mousePressed(MouseEvent me) {
                 if(creatingEdge)
                     beginEdge(me);
 
@@ -512,7 +512,6 @@ public class Gui {
         if (newEdgeStart == 0) {
             System.out.println("Starting a new edge");
             System.out.println("The mouse is currently positioned at:");
-            System.out.println(MouseInfo.getPointerInfo().getLocation());
 
             int mouseX = me.getX();
             int mouseY = me.getY();
@@ -546,15 +545,15 @@ public class Gui {
     public static void makeEdge(MouseEvent me) {
         System.out.println("Finishing edge");
 
-        jf.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent me) {
+        //jf.addMouseListener(new MouseAdapter() {
+            //@Override
+            //public void mouseClicked(MouseEvent me) {
                 System.out.println("Starting a new edge");
                 System.out.println("The mouse is currently positioned at:");
                 System.out.println(MouseInfo.getPointerInfo().getLocation());
 
-                int mouseX = (int) MouseInfo.getPointerInfo().getLocation().getX();
-                int mouseY = (int) MouseInfo.getPointerInfo().getLocation().getY();
+                int mouseX = me.getX();
+                int mouseY = me.getY();
                 for (int i = 0; i < nodeAmount; i++) {
                     NodePos np = getNodePos(i);
                     int nodeCenterX = (np.x + (nodeDiameter / 2));
@@ -582,9 +581,9 @@ public class Gui {
                 newEdgeStart = 0;
                 newEdgeEnd = 0;
                 creatingEdge = false;
-            }
+            //}
 
-        });
+        //});
     }
 
     static class Rotate {
