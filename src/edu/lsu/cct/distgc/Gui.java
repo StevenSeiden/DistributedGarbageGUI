@@ -22,6 +22,7 @@ public class Gui {
     public static int baseOffset = 5;
     public static int nodeAmount;
     public static boolean creatingEdge = false;
+    public static boolean automated = false;
 
     static class NodePos {
         int x, y; // the position
@@ -320,15 +321,19 @@ public class Gui {
         getButtonText();
 
 
-        GridLayout layout = new GridLayout(17, 1);
+        GridLayout layout = new GridLayout(18, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
+
+        JButton enableAutomation = new JButton("Automate");
+        buttonPanel.add(enableAutomation);
 
         JButton addNode = new JButton("Add node");
         buttonPanel.add(addNode);
 
         JButton addEdge = new JButton("Add edge");
         buttonPanel.add(addEdge);
+
 
         for (int i = 0; i < buttons.length; i++) {
             buttonPanel.add(buttons[i]);
@@ -356,6 +361,10 @@ public class Gui {
 
         addEdge.addActionListener(a -> {
             creatingEdge = true;
+        });
+
+        enableAutomation.addActionListener(a -> {
+            automated = true;
         });
 
 
@@ -440,7 +449,9 @@ public class Gui {
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
-                    waitForMouse();
+                    if(!automated){
+                        waitForMouse();
+                    }
                     getButtonText();
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
@@ -474,7 +485,9 @@ public class Gui {
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
-                    waitForMouse();
+                    if(!automated) {
+                        waitForMouse();
+                    }
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
@@ -502,7 +515,7 @@ public class Gui {
         });
 
         //System.setProperty("test", "cycle");
-        //System.setProperty("size", "20"); //How many nodes
+        //System.setProperty("size", "2"); //How many nodes
         //System.setProperty("verbose", "no");
 
         Main.main(new String[0]);
@@ -577,13 +590,17 @@ public class Gui {
                         }
                     }
                 }
-                System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
+                if(newEdgeStart!=newEdgeEnd) {
+                    System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
 
-                Adversary adv = new Adversary();
+                    Adversary adv = new Adversary();
 
-                Node prev = Node.nodeMap.get(newEdgeStart);
+                    Node prev = Node.nodeMap.get(newEdgeStart);
 
-                prev.createEdge(newEdgeEnd,adv);
+                    prev.createEdge(newEdgeEnd, adv);
+                }else{
+                    System.out.println("You attempted to create an edge that both starts and ends at node "+newEdgeStart);
+                }
 
 
                 newEdgeStart = 0;

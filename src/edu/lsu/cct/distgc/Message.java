@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
+import static edu.lsu.cct.distgc.Gui.automated;
+
 public abstract class Message {
 
     private static int msg_seq = 1;
@@ -118,6 +120,10 @@ public abstract class Message {
             if(ma.size()==1) {
                 guiMessage = ma.get(0);
                 break;
+            }
+            if(automated){
+                Random random = new Random();
+                guiMessage = ma.get(random.nextInt(ma.size()));
             }
             try {
                 Message.class.wait(100);
