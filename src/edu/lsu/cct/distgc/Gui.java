@@ -233,6 +233,7 @@ public class Gui {
                         int startNode = node.id;
                         int endNode = child.id;
                         nodeArrow(angleSeparating, startNode, endNode, nodeX, nodeY, g, mh, baseOffset, Color.black);
+
                     }
                 }
 
@@ -372,7 +373,7 @@ public class Gui {
         jf.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                if(creatingEdge)
+                if (creatingEdge)
                     beginEdge(me);
 
             }
@@ -449,7 +450,7 @@ public class Gui {
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
-                    if(!automated){
+                    if (!automated) {
                         waitForMouse();
                     }
                     getButtonText();
@@ -485,7 +486,7 @@ public class Gui {
                     SwingUtilities.invokeLater(() -> {
                         jf.getContentPane().repaint();
                     });
-                    if(!automated) {
+                    if (!automated) {
                         waitForMouse();
                     }
                     SwingUtilities.invokeLater(() -> {
@@ -559,54 +560,49 @@ public class Gui {
         System.out.println("Finishing edge");
 
         //jf.addMouseListener(new MouseAdapter() {
-            //@Override
-            //public void mouseClicked(MouseEvent me) {
-                System.out.println("Starting a new edge");
-                System.out.println("The mouse is currently positioned at:");
-                System.out.println(MouseInfo.getPointerInfo().getLocation());
+        //@Override
+        //public void mouseClicked(MouseEvent me) {
+        System.out.println("Starting a new edge");
+        System.out.println("The mouse is currently positioned at:");
+        System.out.println(MouseInfo.getPointerInfo().getLocation());
 
-                int mouseX = me.getX();
-                int mouseY = me.getY();
-                for (int i = 0; i < nodeAmount; i++) {
-                    NodePos np = getNodePos(i);
-                    int nodeCenterX = (np.x + (nodeDiameter / 2));
-                    int nodeCenterY = (np.y + (nodeDiameter / 2));
+        int mouseX = me.getX();
+        int mouseY = me.getY();
+        for (int i = 0; i < nodeAmount; i++) {
+            NodePos np = getNodePos(i);
+            int nodeCenterX = (np.x + (nodeDiameter / 2));
+            int nodeCenterY = (np.y + (nodeDiameter / 2));
 
-                    double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
+            double mouseDist = Math.hypot(nodeCenterX - mouseX, nodeCenterY - mouseY);
 
-                    if (mouseDist <= nodeDiameter) {
-                        if (i == 0) {
-                            System.out.println("Your second node is node #" + nodeAmount);
-                            newEdgeEnd = nodeAmount;
-                        } else {
-                            System.out.println("Your second node is node #" + i);
-                            newEdgeEnd = i;
-                        }
-                    } else {
-                        if (i == 0) {
-                            System.out.println("Node #" + nodeAmount + " wasn't clicked.");
-                        } else {
-                            System.out.println("Node #" + i + " wasn't clicked.");
-                        }
-                    }
+            if (mouseDist <= nodeDiameter) {
+                if (i == 0) {
+                    System.out.println("Your second node is node #" + nodeAmount);
+                    newEdgeEnd = nodeAmount;
+                } else {
+                    System.out.println("Your second node is node #" + i);
+                    newEdgeEnd = i;
                 }
-                if(newEdgeStart!=newEdgeEnd) {
-                    System.out.println("You are making an edge from node #" + newEdgeStart + " to edge #" + newEdgeEnd + ".");
-
-                    Adversary adv = new Adversary();
-
-                    Node prev = Node.nodeMap.get(newEdgeStart);
-
-                    prev.createEdge(newEdgeEnd, adv);
-                }else{
-                    System.out.println("You attempted to create an edge that both starts and ends at node "+newEdgeStart);
+            } else {
+                if (i == 0) {
+                    System.out.println("Node #" + nodeAmount + " wasn't clicked.");
+                } else {
+                    System.out.println("Node #" + i + " wasn't clicked.");
                 }
+            }
+        }
+        System.out.println("You are making an edge from node #" + newEdgeStart + " to node #" + newEdgeEnd + ".");
 
+        Adversary adv = new Adversary();
 
-                newEdgeStart = 0;
-                newEdgeEnd = 0;
-                creatingEdge = false;
-            //}
+        Node prev = Node.nodeMap.get(newEdgeStart);
+
+        prev.createEdge(newEdgeEnd, adv);
+
+        newEdgeStart = 0;
+        newEdgeEnd = 0;
+        creatingEdge = false;
+        //}
 
         //});
     }
@@ -628,58 +624,68 @@ public class Gui {
 
 
     public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh, int offset, Color color) {
+        if (startNode != endNode) {
+            NodePos np1 = getNodePos(startNode);
 
-        NodePos np1 = getNodePos(startNode);
-
-        int x1 = np1.x;
-        int y1 = np1.y;
-
-
-        NodePos np2 = getNodePos(endNode);
-
-        int x2 = np2.x;
-        int y2 = np2.y;
+            int x1 = np1.x;
+            int y1 = np1.y;
 
 
-        if (color != null)
-            g.setColor(color);
+            NodePos np2 = getNodePos(endNode);
 
-        double theta = Math.atan2(y2 - y1, x2 - x1);
-        double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
-        double L = 10 * 2; // The length of the arrow head
-        double h = L / 2;
-        double Radius = nodeDiameter / 2 + 5;
-        //double offset = 5;
+            int x2 = np2.x;
+            int y2 = np2.y;
 
 
-        Rotate r1 = new Rotate();
-        r1.x1 = x1;
-        r1.y1 = y1;
-        r1.x2 = (int) (x1 + Radius);
-        r1.y2 = (int) (y1 + offset);
-        rotate(r1, theta);
+            if (color != null)
+                g.setColor(color);
 
-        Rotate r2 = new Rotate();
-        r2.x1 = x1;
-        r2.y1 = y1;
-        r2.x2 = (int) (d + x1 - Radius);
-        r2.y2 = (int) (y1 + offset);
-        rotate(r2, theta);
+            double theta = Math.atan2(y2 - y1, x2 - x1);
+            double d = Math.sqrt((double) ((x1 - x2) * (x1 - x2)) + (double) ((y1 - y2) * (y1 - y2)));
+            double L = 10 * 2; // The length of the arrow head
+            double h = L / 2;
+            double Radius = nodeDiameter / 2 + 5;
+            //double offset = 5;
 
-        Rotate r3 = new Rotate();
-        r3.x1 = x1;
-        r3.y1 = y1;
-        r3.x2 = (int) (d - L + x1 - Radius);
-        r3.y2 = (int) (y1 - h + offset);
-        rotate(r3, theta);
 
-        Rotate r4 = new Rotate();
-        r4.x1 = x1;
-        r4.y1 = y1;
-        r4.x2 = (int) (d - L + x1 - Radius);
-        r4.y2 = (int) (y1 + h + offset);
-        rotate(r4, theta);
-        g.drawLine(r1.x2, r1.y2, r2.x2, r2.y2);
-        g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
+            Rotate r1 = new Rotate();
+            r1.x1 = x1;
+            r1.y1 = y1;
+            r1.x2 = (int) (x1 + Radius);
+            r1.y2 = (int) (y1 + offset);
+            rotate(r1, theta);
+
+            Rotate r2 = new Rotate();
+            r2.x1 = x1;
+            r2.y1 = y1;
+            r2.x2 = (int) (d + x1 - Radius);
+            r2.y2 = (int) (y1 + offset);
+            rotate(r2, theta);
+
+            Rotate r3 = new Rotate();
+            r3.x1 = x1;
+            r3.y1 = y1;
+            r3.x2 = (int) (d - L + x1 - Radius);
+            r3.y2 = (int) (y1 - h + offset);
+            rotate(r3, theta);
+
+            Rotate r4 = new Rotate();
+            r4.x1 = x1;
+            r4.y1 = y1;
+            r4.x2 = (int) (d - L + x1 - Radius);
+            r4.y2 = (int) (y1 + h + offset);
+            rotate(r4, theta);
+            g.drawLine(r1.x2, r1.y2, r2.x2, r2.y2);
+            g.fillPolygon(new int[]{r2.x2, r3.x2, r4.x2}, new int[]{r2.y2, r3.y2, r4.y2}, 3);
+        } else {
+
+            g.setFont(new Font("default", Font.BOLD, 30));
+            if (color != null)
+                g.setColor(color);
+
+            NodePos sn = getNodePos(startNode);
+
+            g.fillOval(sn.x-(nodeDiameter/2),sn.y-(nodeDiameter/2),10,10);
+        }
     }
 }
