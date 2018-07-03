@@ -7,10 +7,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.Collections;
-import java.math.*;
 import java.util.*;
 import java.io.File;
 import javax.imageio.ImageIO;
@@ -28,7 +24,7 @@ public class Gui {
         int x, y; // the position
     }
 
-    static <T> ArrayList<T> makeCopy(Collection<T> col) {
+    private static <T> ArrayList<T> makeCopy(Collection<T> col) {
         while (true) {
             try {
                 ArrayList<T> li = new ArrayList<>();
@@ -40,13 +36,13 @@ public class Gui {
         }
     }
 
-    static NodePos getNodePos(int nodeId) {
+    private static NodePos getNodePos(int nodeId) {
         nodeAmount = Node.nodeMap.size();
         double angleSeparating = (2 * Math.PI / nodeAmount);
         NodePos np = new NodePos();
-        np.x = (int) (((circleDiameter / 2) * (double) Math.cos(angleSeparating * nodeId)) + (circleDiameter / 2));
+        np.x = (int) (((circleDiameter / 2) * Math.cos(angleSeparating * nodeId)) + (circleDiameter / 2));
 
-        np.y = (int) (((circleDiameter / 2) * (double) Math.sin(angleSeparating * nodeId)) + (circleDiameter / 2));
+        np.y = (int) (((circleDiameter / 2) * Math.sin(angleSeparating * nodeId)) + (circleDiameter / 2));
         np.x += nodeDiameter / 2;
         np.y += nodeDiameter / 2;
         return np;
@@ -58,9 +54,9 @@ public class Gui {
         int phase;
     }
 
-    static boolean waitForMouse = true;
+    private static boolean waitForMouse = true;
 
-    synchronized static void waitForMouse() {
+    private synchronized static void waitForMouse() {
         while (waitForMouse) {
             try {
                 Gui.class.wait();
@@ -70,7 +66,7 @@ public class Gui {
         waitForMouse = true;
     }
 
-    synchronized static void mouseIsClicked() {
+    private synchronized static void mouseIsClicked() {
         waitForMouse = false;
         Gui.class.notifyAll();
         //Message.waitForNoGui();
@@ -94,7 +90,7 @@ public class Gui {
         }
     }
 
-    static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
+    private static Color nodeColor[] = {Color.white, Color.gray, Color.cyan, Color.green, Color.orange, Color.pink, Color.yellow,
             (new Color(193, 135, 227)),
             (new Color(12, 143, 0)),
             (new Color(255, 116, 56)),
@@ -113,9 +109,9 @@ public class Gui {
 
 
     //Making a hashmap to associate colors with CIDs
-    static HashMap<String, Integer> cidColor = new HashMap<String, Integer>();
+    private static HashMap<String, Integer> cidColor = new HashMap<>();
 
-    static int currentColor = 2;
+    private static int currentColor = 2;
 
     static {
         cidColor.put("blank", 0);
@@ -123,9 +119,9 @@ public class Gui {
     }
 
 
-    static int circleDiameter = 500;
+    private static int circleDiameter = 500;
 
-    static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
+    private static void paintMe(Dimension d, Graphics g, MessageHolder mh) {
         g.setColor(Color.white);
         g.fillRect(0, 0, d.width, d.height);
 
@@ -156,11 +152,9 @@ public class Gui {
             }
             g.drawString(m, 0, 25);
         }
-        int n = 0;
 
         try {
             for (Node node : makeCopy(Node.nodeMap.values())) {
-                n = node.id;
                 NodePos np = getNodePos(node.id);
                 int nodeX = np.x - nodeDiameter / 2;
                 int nodeY = np.y - nodeDiameter / 2;
@@ -232,18 +226,18 @@ public class Gui {
                         //System.out.printf("There's an edge from %d to %d%n", node.id, child.id);
                         int startNode = node.id;
                         int endNode = child.id;
-                        nodeArrow(angleSeparating, startNode, endNode, nodeX, nodeY, g, mh, baseOffset, Color.black);
+                        nodeArrow(angleSeparating, startNode, endNode, g, mh, baseOffset, Color.black);
 
                     }
                 }
 
                 if (node.cd != null && node.cd.parent > 0) {
-                    nodeArrow(0.0, node.id, node.cd.parent, 0, 0, g, mh, baseOffset * 3, Color.blue);
+                    nodeArrow(0.0, node.id, node.cd.parent, g, mh, baseOffset * 3, Color.blue);
                 }
             }
             if (mh.m != null) {
                 if (mh.m.sender != 0) {
-                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, 0, 0, g, mh, baseOffset * 3, arrowColor);
+                    nodeArrow(0.0, mh.m.sender, mh.m.recipient, g, mh, baseOffset * 3, arrowColor);
                 }
             }
         } catch (Exception e) {
@@ -252,22 +246,22 @@ public class Gui {
         }
     }
 
-    static volatile Image image;
-    static Container jcomp;
+    private static volatile Image image;
+    private static Container jcomp;
 
-    public static void paintMe(MessageHolder mh) {
+    private static void paintMe(MessageHolder mh) {
         Dimension d = jcomp.getSize();
         image = jcomp.createImage(d.width, d.height);
         paintMe(d, image.getGraphics(), mh);
     }
 
     //Array of messages
-    static ArrayList<Message> buttonMessage = new ArrayList<>();
+    private static ArrayList<Message> buttonMessage = new ArrayList<>();
 
-    static JButton[] buttons = new JButton[15];
+    private static JButton[] buttons = new JButton[15];
 
     //Getting the message for each button
-    static void getButtonText() {
+    private static void getButtonText() {
         System.out.println("BUTTONS START");
         //Clearing out the buttonMessage array
         for (int c = 0; c < buttonMessage.size(); c++) {
@@ -299,11 +293,11 @@ public class Gui {
 
     }
 
-    static int newEdgeStart;
-    static int newEdgeEnd;
+    private static int newEdgeStart;
+    private static int newEdgeEnd;
 
 
-    static JFrame jf;
+    private static JFrame jf;
 
     public static void main(String[] args) throws Exception {
         jf = new JFrame("Distributed GC GUI");
@@ -522,7 +516,7 @@ public class Gui {
         Main.main(new String[0]);
     }
 
-    public static void beginEdge(MouseEvent me) {
+    private static void beginEdge(MouseEvent me) {
         if (newEdgeStart == 0) {
             System.out.println("Starting a new edge");
             System.out.println("The mouse is currently positioned at:");
@@ -556,7 +550,7 @@ public class Gui {
         }
     }
 
-    public static void makeEdge(MouseEvent me) {
+    private static void makeEdge(MouseEvent me) {
         System.out.println("Finishing edge");
 
         //jf.addMouseListener(new MouseAdapter() {
@@ -612,7 +606,7 @@ public class Gui {
     }
 
     //Rotate arrows using rotate()
-    static void rotate(Rotate r, double theta) {
+    private static void rotate(Rotate r, double theta) {
         double d = Math.sqrt(((r.x2 - r.x1) * (r.x2 - r.x1)) + ((r.y2 - r.y1) * (r.y2 - r.y1)));
         double alpha = Math.atan2(r.y2 - r.y1, r.x2 - r.x1);
         double beta = alpha + theta;
@@ -623,7 +617,7 @@ public class Gui {
     }
 
 
-    public static void nodeArrow(double angleSeparating, int startNode, int endNode, int nodeX, int nodeY, Graphics g, MessageHolder mh, int offset, Color color) {
+    private static void nodeArrow(double angleSeparating0, int startNode, int endNode,  Graphics g, MessageHolder mh, int offset, Color color) {
         if (startNode != endNode) {
             NodePos np1 = getNodePos(startNode);
 
@@ -659,7 +653,7 @@ public class Gui {
             r2.x1 = x1;
             r2.y1 = y1;
             r2.x2 = (int) (d + x1 - Radius);
-            r2.y2 = (int) (y1 + offset);
+            r2.y2 = (y1 + offset);
             rotate(r2, theta);
 
             Rotate r3 = new Rotate();
