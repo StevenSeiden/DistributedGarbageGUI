@@ -115,13 +115,14 @@ public abstract class Message {
         while(guiMessage == null) {
             List<Message> ma = new ArrayList<>();
             for(Message m : msgs) {
-                ma.add(m);
+                if(!m.done())
+                    ma.add(m);
             }
             if(ma.size()==1) {
                 guiMessage = ma.get(0);
                 break;
             }
-            if(automated){
+            if(automated && ma.size() > 0){
                 Random random = new Random();
                 guiMessage = ma.get(random.nextInt(ma.size()));
             }
@@ -163,15 +164,16 @@ public abstract class Message {
             guiMessage = null;
             System.out.println(":: GOT GUI "+m);
         }
-        */
         if (m == null) {
             System.out.println(":: No message");
             return false;
         }
+        */
         System.out.println(":: Run Message");
         fireBefore(m);
         //waitFor();
-        m.run();
+        if(m != null) m.run();
+        else System.out.println("m is null");
         fireAfter(m);
         waitFor();
         return true;
