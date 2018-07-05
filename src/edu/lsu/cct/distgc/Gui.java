@@ -355,14 +355,15 @@ public class Gui {
         }
 
         addNode.addActionListener(a -> {
-            new Node();
+            /*
+            Node node = new Node();
 
 
 
 
             System.out.println("Begin printing roots");
 
-            Adversary adv = new Adversary();
+            Adversary adv = Main.adv;
 
 
 
@@ -371,11 +372,13 @@ public class Gui {
                 if(Root.roots.get(i)!=null) {
 
                     System.out.println(Root.roots.get(i));
-                    Node.nodeMap.get(i).createEdge(nodeAmount, adv);
+                    Node.nodeMap.get(i).createEdge(node.id, adv);
                 }
             }
 
             System.out.println("end roots");
+            */
+            new Root(Main.adv);
 
 
         });
