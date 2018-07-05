@@ -356,6 +356,28 @@ public class Gui {
 
         addNode.addActionListener(a -> {
             new Node();
+
+
+
+
+            System.out.println("Begin printing roots");
+
+            Adversary adv = new Adversary();
+
+
+
+
+            for (int i = 0; i < Root.roots.size(); i++) {
+                if(Root.roots.get(i)!=null) {
+
+                    System.out.println(Root.roots.get(i));
+                    Node.nodeMap.get(i).createEdge(nodeAmount, adv);
+                }
+            }
+
+            System.out.println("end roots");
+
+
         });
 
         addEdge.addActionListener(a -> {
@@ -573,7 +595,7 @@ public class Gui {
         newEdgeEnd = fn.nodeFound;
 
 
-        System.out.println("You are making an edge from node #" + newEdgeStart + " to node #" + newEdgeEnd + ".");
+        System.out.println("You are making/removing an edge from node #" + newEdgeStart + " to node #" + newEdgeEnd + ".");
 
         Adversary adv = new Adversary();
 
