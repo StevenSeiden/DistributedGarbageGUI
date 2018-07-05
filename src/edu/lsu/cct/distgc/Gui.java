@@ -18,6 +18,7 @@ public class Gui {
     public static int baseOffset = 5;
     public static int nodeAmount;
     public static boolean creatingEdge = false;
+    public static boolean removingEdge = false;
     public static boolean automated = false;
 
     static class NodePos {
@@ -362,6 +363,7 @@ public class Gui {
         });
 
         removeEdge.addActionListener(a -> {
+            removingEdge = true;
 
         });
 
@@ -377,11 +379,15 @@ public class Gui {
                 if (creatingEdge)
                     beginEdge(me);
 
+                if(removingEdge)
+                    beginEdge(me);
             }
 
             @Override
             public void mouseReleased(MouseEvent me) {
                 if (creatingEdge)
+                    makeEdge(me);
+                if (removingEdge)
                     makeEdge(me);
             }
 
@@ -393,24 +399,6 @@ public class Gui {
             @Override
             public void paint(Graphics g) {
                 System.out.println("Paint called");
-
-
-                /*for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
-                    Message m = buttonMessage.get(i);
-                    if(m == null || m.done()) {
-                        buttons[i].setEnabled(false);
-                        buttons[i].setText("Button #"+i);
-                    } else {
-                        buttons[i].setEnabled(true);
-                        String s = m.toString();
-                        int index = s.indexOf("(");
-                        if(index != -1) {
-                            buttons[i].setText(s.substring(0, index));
-                        }else{
-                            buttons[i].setText(s);
-                        }
-                    }
-                }*/
 
                 Dimension d = getSize();
                 g.setColor(Color.white);
@@ -578,9 +566,6 @@ public class Gui {
     private static void makeEdge(MouseEvent me) {
         System.out.println("Finishing edge");
 
-        System.out.println("Starting a new edge");
-
-
         ClickedNode fn = new ClickedNode();
 
         getClickedNode(fn,me);
@@ -594,12 +579,26 @@ public class Gui {
 
         Node prev = Node.nodeMap.get(newEdgeStart);
 
-        prev.createEdge(newEdgeEnd, adv);
 
-        newEdgeStart = 0;
-        newEdgeEnd = 0;
-        creatingEdge = false;
+
+
+        if(creatingEdge) {
+            prev.createEdge(newEdgeEnd, adv);
+
+            newEdgeStart = 0;
+            newEdgeEnd = 0;
+            creatingEdge = false;
+        }else if(removingEdge){
+            prev.removeEdge(newEdgeEnd, adv);
+
+            newEdgeStart = 0;
+            newEdgeEnd = 0;
+            removingEdge = false;
+
+        }
     }
+
+
 
 
     static class Rotate {
@@ -618,7 +617,7 @@ public class Gui {
     }
 
 
-    private static void nodeArrow(double angleSeparating0, int startNode, int endNode,  Graphics g, MessageHolder mh, int offset, Color color) {
+    private static void nodeArrow(double angleSeparating, int startNode, int endNode,  Graphics g, MessageHolder mh, int offset, Color color) {
         if (startNode != endNode) {
             NodePos np1 = getNodePos(startNode);
 
