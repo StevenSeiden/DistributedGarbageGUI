@@ -355,30 +355,8 @@ public class Gui {
         }
 
         addNode.addActionListener(a -> {
-            /*
-            Node node = new Node();
-
-
-
-
-            System.out.println("Begin printing roots");
-
-            Adversary adv = Main.adv;
-
-
-
-
-            for (int i = 0; i < Root.roots.size(); i++) {
-                if(Root.roots.get(i)!=null) {
-
-                    System.out.println(Root.roots.get(i));
-                    Node.nodeMap.get(i).createEdge(node.id, adv);
-                }
-            }
-
-            System.out.println("end roots");
-            */
             new Root(Main.adv);
+            addNode.setEnabled(false);
 
 
         });
@@ -480,6 +458,22 @@ public class Gui {
                         e.printStackTrace();
                         System.exit(0);
                     }
+
+                    enableAutomation.setEnabled(false);
+                    addNode.setEnabled(false);
+                    addEdge.setEnabled(false);
+                    removeEdge.setEnabled(false);
+
+                    for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
+                        buttons[i].setEnabled(false);
+                    }
+
+
+
+
+
+
+
                 };
                 new Thread(r).start();
 
@@ -518,6 +512,11 @@ public class Gui {
                 };
                 new Thread(r).start();
                 arrowColor = nodeColor[8];
+
+                enableAutomation.setEnabled(true);
+                addNode.setEnabled(true);
+                addEdge.setEnabled(true);
+                removeEdge.setEnabled(true);
 
             }
 
@@ -600,7 +599,6 @@ public class Gui {
 
         System.out.println("You are making/removing an edge from node #" + newEdgeStart + " to node #" + newEdgeEnd + ".");
 
-        Adversary adv = new Adversary();
 
         Node prev = Node.nodeMap.get(newEdgeStart);
 
@@ -608,13 +606,13 @@ public class Gui {
 
 
         if(creatingEdge) {
-            prev.createEdge(newEdgeEnd, adv);
+            prev.createEdge(newEdgeEnd, Main.adv);
 
             newEdgeStart = 0;
             newEdgeEnd = 0;
             creatingEdge = false;
         }else if(removingEdge){
-            prev.removeEdge(newEdgeEnd, adv);
+            prev.removeEdge(newEdgeEnd, Main.adv);
 
             newEdgeStart = 0;
             newEdgeEnd = 0;
