@@ -588,12 +588,13 @@ public class Gui {
 
             getClickedNode(sn,me);
             for(int i=0; i<Root.roots.size(); i++) {
-
-                if(sn.nodeFound == Root.roots.get(i).getId()){
-                    //rootToRemove = Root.roots.get(i);
-                    Root.roots.get(i).set(null,Main.adv);
+                if (Root.roots.get(i) != null){
+                    if (sn.nodeFound == Root.roots.get(i).getId()) {
+                        //rootToRemove = Root.roots.get(i);
+                        Root.roots.get(i).set(null, Main.adv);
+                        break;
+                    }
                 }
-
             }
 
 
