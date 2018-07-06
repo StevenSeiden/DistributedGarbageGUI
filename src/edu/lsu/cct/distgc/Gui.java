@@ -587,9 +587,14 @@ public class Gui {
             ClickedNode sn = new ClickedNode();
 
             getClickedNode(sn,me);
+            for(int i=0; i<Root.roots.size(); i++) {
 
-            Root node = Root.roots.get(sn.nodeFound);
-            node.set(null,Main.adv);
+                if(sn.nodeFound == Root.roots.get(i).getId()){
+                    //rootToRemove = Root.roots.get(i);
+                    Root.roots.get(i).set(null,Main.adv);
+                }
+
+            }
 
 
         }
