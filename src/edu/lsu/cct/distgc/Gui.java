@@ -19,6 +19,7 @@ public class Gui {
     public static int nodeAmount;
     public static boolean creatingEdge = false;
     public static boolean removingEdge = false;
+    public static boolean removingRoot = false;
     public static boolean automated = false;
 
     static class NodePos {
@@ -317,7 +318,7 @@ public class Gui {
         getButtonText();
 
 
-        GridLayout layout = new GridLayout(18, 1);
+        GridLayout layout = new GridLayout(19, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
 
@@ -332,6 +333,10 @@ public class Gui {
 
         JButton removeEdge = new JButton("Remove edge");
         buttonPanel.add(removeEdge);
+
+
+        JButton removeRoot = new JButton("Remove root");
+        buttonPanel.add(removeRoot);
 
 
         for (int i = 0; i < buttons.length; i++) {
@@ -370,6 +375,10 @@ public class Gui {
 
         });
 
+        removeRoot.addActionListener(a -> {
+            removingRoot = true;
+        });
+
         enableAutomation.addActionListener(a -> {
             automated = true;
         });
@@ -379,18 +388,15 @@ public class Gui {
         jf.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
-                if (creatingEdge)
+                if (creatingEdge || removingEdge)
                     beginEdge(me);
-
-                if(removingEdge)
-                    beginEdge(me);
+                else if(removingRoot)
+                    removingRoot(me);
             }
 
             @Override
             public void mouseReleased(MouseEvent me) {
-                if (creatingEdge)
-                    makeEdge(me);
-                if (removingEdge)
+                if (creatingEdge || removingEdge)
                     makeEdge(me);
             }
 
@@ -463,6 +469,7 @@ public class Gui {
                     addNode.setEnabled(false);
                     addEdge.setEnabled(false);
                     removeEdge.setEnabled(false);
+                    removeRoot.setEnabled(false);
 
                     for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
                         buttons[i].setEnabled(false);
@@ -517,6 +524,7 @@ public class Gui {
                 addNode.setEnabled(true);
                 addEdge.setEnabled(true);
                 removeEdge.setEnabled(true);
+                removeRoot.setEnabled(true);
 
             }
 
@@ -572,10 +580,20 @@ public class Gui {
         return n;
     }
 
+
+    private static void removingRoot(MouseEvent me){
+        if(removingRoot){
+            ClickedNode sn = new ClickedNode();
+
+            getClickedNode(sn,me);
+            SimulationExecutor.unRootNode(Main.adv,sn.nodeFound);
+            newEdgeStart = 0;
+        }
+    }
+
     private static void beginEdge(MouseEvent me) {
         if (newEdgeStart == 0) {
             System.out.println("Starting a new edge");
-
 
             ClickedNode sn = new ClickedNode();
 
