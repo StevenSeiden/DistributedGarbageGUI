@@ -516,15 +516,16 @@ public class Gui {
                         System.exit(0);
                     }
                     ready = true;
+
+
+                    enableAutomation.setEnabled(true);
+                    addNode.setEnabled(true);
+                    addEdge.setEnabled(true);
+                    removeEdge.setEnabled(true);
+                    removeRoot.setEnabled(true);
                 };
                 new Thread(r).start();
                 arrowColor = nodeColor[8];
-
-                enableAutomation.setEnabled(true);
-                addNode.setEnabled(true);
-                addEdge.setEnabled(true);
-                removeEdge.setEnabled(true);
-                removeRoot.setEnabled(true);
 
             }
 
@@ -586,8 +587,11 @@ public class Gui {
             ClickedNode sn = new ClickedNode();
 
             getClickedNode(sn,me);
-            SimulationExecutor.unRootNode(Main.adv,sn.nodeFound);
-            newEdgeStart = 0;
+
+            Root node = Root.roots.get(sn.nodeFound);
+            node.set(null,Main.adv);
+
+
         }
     }
 
