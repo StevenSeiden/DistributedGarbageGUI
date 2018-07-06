@@ -260,7 +260,7 @@ public class Gui {
     //Array of messages
     private static ArrayList<Message> buttonMessage = new ArrayList<>();
 
-    private static JButton[] buttons = new JButton[14];
+    private static JButton[] buttons = new JButton[13];
 
     //Getting the message for each button
     private static void getButtonText() {
@@ -318,7 +318,7 @@ public class Gui {
         getButtonText();
 
 
-        GridLayout layout = new GridLayout(19, 1);
+        GridLayout layout = new GridLayout(18, 1);
         layout.setVgap(10);
         buttonPanel.setLayout(layout);
 
@@ -360,8 +360,12 @@ public class Gui {
         }
 
         addNode.addActionListener(a -> {
-            new Root(Main.adv);
-            addNode.setEnabled(false);
+
+            Thread r = new Thread(() -> {
+                new Root(Main.adv);
+                addNode.setEnabled(false);
+            });
+            r.start();
 
 
         });
@@ -390,7 +394,7 @@ public class Gui {
             public void mousePressed(MouseEvent me) {
                 if (creatingEdge || removingEdge)
                     beginEdge(me);
-                else if(removingRoot)
+                else if (removingRoot)
                     removingRoot(me);
             }
 
@@ -474,11 +478,6 @@ public class Gui {
                     for (int i = 0; i < buttonMessage.size() && i < buttons.length; i++) {
                         buttons[i].setEnabled(false);
                     }
-
-
-
-
-
 
 
                 };
@@ -582,23 +581,28 @@ public class Gui {
     }
 
 
-    private static void removingRoot(MouseEvent me){
-        if(removingRoot){
-            ClickedNode sn = new ClickedNode();
+    private static void removingRoot(MouseEvent me) {
 
-            getClickedNode(sn,me);
-            for(int i=0; i<Root.roots.size(); i++) {
-                if (Root.roots.get(i) != null){
-                    if (sn.nodeFound == Root.roots.get(i).getId()) {
-                        //rootToRemove = Root.roots.get(i);
-                        Root.roots.get(i).set(null, Main.adv);
-                        break;
+        Thread r = new Thread(() -> {
+
+
+            if (removingRoot) {
+                ClickedNode sn = new ClickedNode();
+
+                getClickedNode(sn, me);
+                for (int i = 0; i < Root.roots.size(); i++) {
+                    if (Root.roots.get(i).get() != null) {
+                        if (sn.nodeFound == Root.roots.get(i).getId()) {
+                            //rootToRemove = Root.roots.get(i);
+                            Root.roots.get(i).set(null, Main.adv);
+                            break;
+                        }
                     }
                 }
             }
+        });
+        r.start();
 
-
-        }
     }
 
     private static void beginEdge(MouseEvent me) {
@@ -607,7 +611,7 @@ public class Gui {
 
             ClickedNode sn = new ClickedNode();
 
-            getClickedNode(sn,me);
+            getClickedNode(sn, me);
 
             newEdgeStart = sn.nodeFound;
 
@@ -620,7 +624,7 @@ public class Gui {
 
         ClickedNode fn = new ClickedNode();
 
-        getClickedNode(fn,me);
+        getClickedNode(fn, me);
 
         newEdgeEnd = fn.nodeFound;
 
@@ -631,15 +635,16 @@ public class Gui {
         Node prev = Node.nodeMap.get(newEdgeStart);
 
 
-
-
-        if(creatingEdge) {
+        if (creatingEdge) {
+            Thread r = new Thread(() -> {
             prev.createEdge(newEdgeEnd, Main.adv);
 
             newEdgeStart = 0;
             newEdgeEnd = 0;
             creatingEdge = false;
-        }else if(removingEdge){
+            });
+            r.start();
+        } else if (removingEdge) {
             prev.removeEdge(newEdgeEnd, Main.adv);
 
             newEdgeStart = 0;
@@ -648,8 +653,6 @@ public class Gui {
 
         }
     }
-
-
 
 
     static class Rotate {
@@ -668,7 +671,7 @@ public class Gui {
     }
 
 
-    private static void nodeArrow(double angleSeparating, int startNode, int endNode,  Graphics g, MessageHolder mh, int offset, Color color) {
+    private static void nodeArrow(double angleSeparating, int startNode, int endNode, Graphics g, MessageHolder mh, int offset, Color color) {
         if (startNode != endNode) {
             NodePos np1 = getNodePos(startNode);
 
@@ -730,7 +733,7 @@ public class Gui {
 
             NodePos sn = getNodePos(startNode);
 
-            g.fillOval(sn.x-(nodeDiameter/2),sn.y-(nodeDiameter/2),10,10);
+            g.fillOval(sn.x - (nodeDiameter / 2), sn.y - (nodeDiameter / 2), 10, 10);
         }
     }
 }
